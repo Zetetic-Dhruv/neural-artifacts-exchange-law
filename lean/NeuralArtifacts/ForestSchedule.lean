@@ -92,7 +92,7 @@ theorem initialize_leaf (phi : X -> F -> Real) (c : Code X S F) (x : X)
     | none => simp [level, depth] at h
     | some z => exact ih z.1 z.2 h
 
-omit [Fintype X] in
+omit [Fintype X] [DecidableEq X] [Fintype S] [DecidableEq S] [Inhabited S] in
 theorem chosen_child_earlier (phi : X -> F -> Real) (c : Code X S F) (x : X)
     (v : Nodes c) (h : 0 < level c v) : level c (choose phi c x v) < level c v := by
   induction c with
@@ -108,7 +108,7 @@ theorem chosen_child_earlier (phi : X -> F -> Real) (c : Code X S F) (x : X)
       omega
     | some z => exact ih z.1 z.2 h
 
-omit [Fintype X] in
+omit [Fintype X] [DecidableEq X] [Fintype S] [DecidableEq S] [Inhabited S] in
 theorem node_semantics (phi : X -> F -> Real) (c : Code X S F) (x : X) (v : Nodes c)
     (h : 0 < level c v) :
     nodeTable c v (target phi c x (choose phi c x v)) = target phi c x v := by
@@ -127,6 +127,7 @@ def sharedPlan (phi : X -> F -> Real) (c : Code X S F) :
   choose t x v := if level c v = t + 1 then choose phi c x v else v
   table _ := nodeTable c
 
+omit [Fintype X] [DecidableEq X] [Fintype S] [DecidableEq S] in
 /-- After exactly D routing layers every node has its required semantic value. -/
 theorem depth_suffices (phi : X -> F -> Real) (c : Code X S F) (x : X)
     (v : Nodes c) : symbols (sharedPlan phi c) x (depth c) v = target phi c x v := by
@@ -145,6 +146,7 @@ theorem depth_suffices (phi : X -> F -> Real) (c : Code X S F) (x : X)
       node_semantics phi c x v (by omega)
   · exact level_le_depth c v
 
+omit [Fintype X] [DecidableEq X] in
 /-- Complete shared-block compiler theorem, with all token coordinates tracked. -/
 theorem literal_forest_correct {Z : Type*} (phi : X -> F -> Real)
     (c : Code X S F) (fixedCoordinates : Nodes c -> Z -> Real) (x : X) (v : Nodes c) :
@@ -152,6 +154,7 @@ theorem literal_forest_correct {Z : Type*} (phi : X -> F -> Real)
       Token.mk (oneHot v) (fixedCoordinates v) (oneHot (target phi c x v)) (fun _ => 0) := by
   rw [literalRun_invariant, depth_suffices]
 
+omit [Fintype X] [DecidableEq X] in
 theorem literal_root_correct {Z : Type*} (phi : X -> F -> Real)
     (c : Code X S F) (fixedCoordinates : Nodes c -> Z -> Real) (x : X) :
     (literalRun (sharedPlan phi c) fixedCoordinates x (depth c) (root c)).payload =

@@ -134,7 +134,7 @@ unique empty conjunction has activation ReLU(0 - (0-1)) = 1. -/
 def tupleNeuron (v : (j : J) -> S j -> Real) (y : (j : J) -> S j) : Real :=
   relu ((∑ j, v j (y j)) - ((Fintype.card J : Real) - 1))
 
-omit [DecidableEq J] in
+omit [DecidableEq J] [∀ j, Fintype (S j)] in
 theorem tupleNeuron_oneHot (x y : (j : J) -> S j) :
     tupleNeuron (fun j => oneHot (x j)) y = oneHot x y := by
   rw [tupleNeuron, sum_oneHot_agreeCount]

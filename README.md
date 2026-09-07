@@ -10,14 +10,15 @@ reruns every reported enumeration (Python 3.13, NumPy 2.3).
 
 ## Formalization
 
-`lean/` is a Lean 4 project over Mathlib. Most results in the paper are proved there
+`lean/` is a Lean 4 project over Mathlib. All results in the paper are proved there
 at full generality: the canonical inference state, the exchange law under independent
 pooling with its exact chain region, the coupled-width separation, the exact chain and
 Boolean residual laws, finite-state extraction and recovery of the meet, the
 attention--ReLU compiler with its semantic round trip, finite-symbol hardening and its
 perturbation certificates, query certificates, intervention preservation for finite
-structural causal models, the table and permutation memory bounds, and measurability of
-the hardened events. Real quantifier elimination enters as an explicit interface.
+structural causal models, the table and permutation memory bounds, measurability of the
+hardened events, the width law for an arbitrary inference state, the adaptive-experiment
+bound on a pooled memory, and the mind-change bound. Real quantifier elimination enters as an explicit interface.
 
 ```sh
 cd lean

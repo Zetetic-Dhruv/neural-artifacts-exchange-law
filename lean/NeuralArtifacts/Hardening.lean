@@ -145,6 +145,7 @@ theorem round_range (t : Real) : 0 ≤ roundSymbol eta t ∧ roundSymbol eta t �
   · apply (div_le_iff₀ (by linarith : 0 < 1 - 2 * eta)).mpr
     linarith
 
+omit he0 in
 /-- Necessary and sufficient, including ties between branches with the same value. -/
 theorem exact_symbol_iff {I S : Type*} [Fintype I] [DecidableEq S]
     (p : Probability I) (label : I -> S) (target : S) :

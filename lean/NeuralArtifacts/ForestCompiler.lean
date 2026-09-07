@@ -140,7 +140,7 @@ def MassCertificate (phi : X -> F -> Real) (eta T : Real) : Code X S F -> X -> P
 
 omit [Inhabited S] in
 theorem soft_execution_exact (phi : X -> F -> Real) (eta T : Real)
-    (he0 : 0 ≤ eta) (he : eta < 1 / 2) (c : Code X S F) (x : X)
+    (_he0 : 0 ≤ eta) (he : eta < 1 / 2) (c : Code X S F) (x : X)
     (cert : MassCertificate phi eta T c x) :
     executeSoft phi eta T c x = oneHot (eval phi c x) := by
   revert cert
@@ -162,7 +162,7 @@ theorem soft_execution_exact (phi : X -> F -> Real) (eta T : Real)
         intro s
         simp_rw [ih _ (hchildren _)]
         exact Probability.mixture_eq_coord _ _ _
-      have hkey := (exact_symbol_iff he0 he _ labels _).mpr hmass
+      have hkey := (exact_symbol_iff he _ labels _).mpr hmass
       funext s
       rw [hm s]
       exact congrFun hkey s
@@ -188,7 +188,7 @@ theorem correctedDispatch_exact {N I : Type*} [Fintype N] [DecidableEq N] [Finty
     (f : N -> S -> S) (n : N) (p : Probability I) (label : I -> S) (target : S)
     (hmass : p.wrong label target ≤ eta) :
     correctedDispatch eta f (oneHot n) (p.coord label) = oneHot (f n target) := by
-  have hround := (exact_symbol_iff he0 he p label target).mpr hmass
+  have hround := (exact_symbol_iff he p label target).mpr hmass
   have hh (m : N) (s : S) :
       gatedRound eta (oneHot n m) (p.coord label s) =
       if m = n then oneHot target s else 0 := by

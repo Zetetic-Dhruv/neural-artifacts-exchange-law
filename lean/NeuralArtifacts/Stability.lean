@@ -31,7 +31,7 @@ theorem corrected_shared_block (eta : Real) (he0 : 0 ≤ eta) (he : eta < 1 / 2)
       (attentionResidual (Token.mk (oneHot n) fixedCoordinates (oneHot old) (fun _ => 0)) (p.coord label)) =
       Token.mk (oneHot n) fixedCoordinates
         (oneHot (if active n then f n target else old)) (fun _ => 0) := by
-  have hround := (exact_symbol_iff he0 he p label target).mpr hmass
+  have hround := (exact_symbol_iff he p label target).mpr hmass
   have hg (m : N) (s : S) :
       gatedRound eta (oneHot n m) (p.coord label s) =
       if m = n then oneHot target s else 0 := by

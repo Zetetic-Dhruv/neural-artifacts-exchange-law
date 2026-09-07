@@ -25,3 +25,6 @@ import NeuralArtifacts.GuardedProjection
 import NeuralArtifacts.GuardedNetworks
 import NeuralArtifacts.RealAlgebraBoundary
 import NeuralArtifacts.Realizations
+import NeuralArtifacts.MindChange
+import NeuralArtifacts.GeneralWidth
+import NeuralArtifacts.Policy
