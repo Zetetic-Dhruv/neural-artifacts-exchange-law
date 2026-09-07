@@ -85,7 +85,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-An artifact's inference state has two capacities, cardinality and chain height, and independent pooling is priced by the second. The state is the set of distinctions that future observations can expose, a finite meet-semilattice $\R$. Coupled attention needs $\lceil\log_b|\R|\rceil$ coordinates of $b$ values; independently pooled channels of sizes $a_1,\ldots,a_d$ need $\sum_j(a_j-1)\ge\height(\R)-1$, for arbitrary commutative pooling and redundant implementation states. On an $n$-state chain the two are exact and separate exponentially, $\lceil(n-1)/(b-1)\rceil$ against $\lceil\log_b n\rceil$. On a Boolean store of $k$ independently eliminated candidates they coincide at $k$. Chain height is the number of times future evidence can change the answer, so on a pooled memory adaptive queries and memory are one resource: a policy whose memory is the store makes at most $\sum_j(a_j-1)$ informative queries, whereas a decoder with unrestricted memory exchanges stored bits and query bits one for one. Attention--ReLU artifacts realize both sides of each law, their minimal inference machines are recovered from operational parameters, and finite-symbol hardening preserves the machine whenever the probability mass on wrong symbols lies below an explicit threshold. Most results are machine-checked in Lean~4.
+An artifact's inference state has two capacities, cardinality and chain height, and independent pooling is priced by the second. The state is the set of distinctions that future observations can expose, a finite meet-semilattice $\R$. Coupled attention needs $\lceil\log_b|\R|\rceil$ coordinates of $b$ values; independently pooled channels of sizes $a_1,\ldots,a_d$ need $\sum_j(a_j-1)\ge\height(\R)-1$, for arbitrary commutative pooling and redundant implementation states. On an $n$-state chain the two are exact and separate exponentially, $\lceil(n-1)/(b-1)\rceil$ against $\lceil\log_b n\rceil$. On a Boolean store of $k$ independently eliminated candidates they coincide at $k$. Chain height is the number of times future evidence can change the answer, so on a pooled memory adaptive queries and memory are one resource: a policy whose memory is the store makes at most $\sum_j(a_j-1)$ informative queries, whereas a decoder with unrestricted memory exchanges stored bits and query bits one for one. Attention--ReLU artifacts realize both sides of each law, their minimal inference machines are recovered from operational parameters, and finite-symbol hardening preserves the machine whenever the probability mass on wrong symbols lies below an explicit threshold. Most results are machine-checked in Lean~4.\footnote{Lean sources, paper source, and checks: \url{https://anonymous.4open.science/r/neural-artifacts-exchange-law-838F/}}
 \end{abstract}
 
 \section{Introduction}
@@ -142,7 +142,7 @@ The quotient depends on both the available observations and the required answers
 \end{equation}
 Here $b$ is an alphabet size: $p$-bit coordinates have $b=2^p$. Equation~\eqref{eq:cardinality} counts persistent inference states, independently of the implementation of the candidate models.
 
-The second number is the height $\height(\R)$, the number of elements in a longest chain. Along any history the states $[V(s)]$ descend in $\R$, so the readout changes at most $\height(\R)-1$ times, and the Boolean store with first-consistent-model selection attains this on the history that eliminates candidates from the bottom. Cardinality is what a coupled store must hold; height is what an independent one must hold (\cref{sec:exchange}).
+The second number is the height $\height(\R)$, the number of elements in a longest chain. Along any history the states $[V(s)]$ descend in $\R$, so the readout changes at most $\height(\R)-1$ times. Cardinality is what a coupled store must hold; height is what an independent one must hold (\cref{sec:exchange}).
 
 \paragraph{Concrete stores.}
 Nested consistency sets $U_0\subsetneq\cdots\subsetneq U_{n-1}=\C$, together with a readout that distinguishes them, give the chain $C_n$. Positive observations of ordered thresholds give this form with a suitable domain and readout. Independent candidate eliminations generate the Boolean store $2^{[k]}$; reading the full survivor set distinguishes all $2^k$ states.
@@ -212,7 +212,7 @@ For the Boolean store $2^{[k]}$ with survivor readout, $W_{\mathrm{ind}}=W_{\mat
 \begin{proof}
 The coupled construction of \cref{cor:width} extends to any $\R$ by sending unused codes to an adjoined absorbing bottom, which keeps the carrier a commutative idempotent monoid with identity $[\C]$; \eqref{eq:cardinality} forbids fewer coordinates. The lower bound is \eqref{eq:cardinality} together with \eqref{eq:height} at $|M_j|\le b$. One binary channel per candidate, pooled by conjunction, reaches every survivor set of $2^{[k]}$ with an injective readout, and $|2^{[k]}|=2^k$ forbids fewer coordinates under any pooling.
 \end{proof}
-The separation belongs to chains: the ratio $W_{\mathrm{ind}}/W_{\mathrm{joint}}$ is controlled by $\height(\R)/\log_b|\R|$, which is $n/\log_bn$ on $C_n$ and $1+1/k$ on $2^{[k]}$.
+The separation belongs to chains: $W_{\mathrm{ind}}/W_{\mathrm{joint}}$ is controlled by $\height(\R)/\log_b|\R|$.
 
 \subsection{How a structural view replaces residual memory}
 A normalized compositional view of $\R$ is a meet homomorphism $a:\R\to A$. Its kernel $\alpha$ is a meet congruence: equivalent states remain equivalent after intersection with any state. A second view $g:\R\to G$, with kernel $\beta$, jointly determines the inference state precisely when
@@ -230,7 +230,7 @@ Refining the structural view from $\alpha$ to $\alpha'\subseteq\alpha$ enlarges 
 \begin{equation}
  \Mstat(\alpha)=\max_{F\in\R/\alpha}|F|.\label{eq:static}
 \end{equation}
-Assign distinct labels within each fibre and reuse them across fibres. This construction need not support independent updates.
+Assign distinct labels within each fibre and reuse them across fibres.
 
 \begin{proposition}[Sharp chain and Boolean exchange]\label{prop:exact}
 For a chain $C_n$ and any structural meet quotient with $a$ states,
@@ -249,7 +249,7 @@ A chain congruence has interval blocks: if $x\sim z$ and $x\le y\le z$, meeting 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
-\begin{axis}[width=.83\linewidth,height=3.5cm,xmin=1,xmax=16,ymin=1,ymax=16,
+\begin{axis}[width=.83\linewidth,height=2.9cm,xmin=1,xmax=16,ymin=1,ymax=16,
  xlabel={Structural states $a$},ylabel={Residual states},
  xtick={1,4,8,12,16},ytick={1,4,8,12,16},
  legend style={at={(0.98,0.98)},anchor=north east,font=\small,draw=none},
@@ -404,7 +404,7 @@ Finite acyclic structural causal models give an explicit intervention instance \
 A decoder with unrestricted memory obeys instead $B+t\log_2q\ge N\log_2q$ for tables $f:[N]\to[q]$ reconstructed from a $B$-bit target-dependent artifact and at most $t$ adaptive queries (\cref{app:tables}): stored and queried bits exchange one for one because the transcript is retained. A pooled memory retains only its state, so an experiment counts when it moves the state, and memory rungs and informative rounds are the same quantity. The bit law is the coupled case with unrestricted memory. The observation language and model grammar determine which distinctions require table memory: the AES S-box is specified by finite-field inversion and an affine transformation \citep{nist2023aes}, and that grammar, not the table, is the population.
 
 \section{Computational verification and implications}\label{sec:checks}
-Most results are formalized in Lean~4 with Mathlib. The constructions are additionally verified exhaustively on finite families. The accompanying programs use exact integer arithmetic for the transition and congruence checks, and NumPy float64 for softmax evaluations. The network artifacts are compiled from the specified grammars. \Cref{tab:checks} reports the executed checks; \cref{app:checks} defines every enumeration and its assertions.
+Most results are formalized in Lean~4 with Mathlib. The constructions are additionally verified exhaustively on finite families. The network artifacts are compiled from the specified grammars. \Cref{tab:checks} reports the executed checks; \cref{app:checks} defines every enumeration and its assertions.
 
 \begin{table}[t]
 \caption{Executed verification. Counts refer to enumerated mathematical objects or input cases, not independent training runs. Every assertion passed.}
@@ -436,7 +436,7 @@ These results suggest a direct target for learning on artifacts: recover the inf
 The extracted machine supports three certified operations: state compression, which merges states with the same continuation behavior; representation factorization, which chooses a structural congruence $\alpha$ and computes its minimum compatible residual through \eqref{eq:comp}; and hardening, which preserves the entire transition system through the local symbol-mass certificate. Each is invariant under relabeling of the extracted states, so artifacts are compared by the inference operations they implement and the distinctions those operations retain.
 
 \paragraph{Limitations.}
-The bounds measure persistent inference states, not parameter count or running time. Finite-state extraction has exponential worst-case cost in encoded width, and the computational study verifies compiled constructions rather than the prevalence of these representations under optimization. Intervention certificates are relative to the declared model population and experiment semantics. The inference theorems require correctness over the specified observation language; obtaining such certificates for learned continuous-state representations is the next empirical and verification problem.
+The bounds measure persistent inference states, not parameter count or running time. Finite-state extraction has exponential worst-case cost in encoded width, and the computational study verifies compiled constructions; their prevalence under optimization is a separate question. Intervention certificates are relative to the declared model population and experiment semantics. The inference theorems require correctness over the specified observation language; obtaining such certificates for learned continuous-state representations is the next empirical and verification problem.
 
 \paragraph{Conclusion.}
 An artifact's inference capacity is its retained distinctions together with its composition law: cardinality for a coupled store, chain height for an independent one, and the long revision budget at logarithmic width is the capacity in-context evidence draws on. Attention and feedforward computation realize both laws, finite-symbol hardening preserves their semantic state, and model extraction, representation exchange, and artifact comparison become one operational problem.
