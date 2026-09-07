@@ -85,7 +85,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-An artifact's inference state has two capacities, cardinality and chain height, and independent pooling is priced by the second. The state is the set of distinctions that future observations can expose, a finite meet-semilattice $\R$. Coupled attention needs $\lceil\log_b|\R|\rceil$ coordinates of $b$ values; independently pooled channels of sizes $a_1,\ldots,a_d$ need $\sum_j(a_j-1)\ge\height(\R)-1$, for arbitrary commutative pooling and redundant implementation states. On an $n$-state chain the two are exact and separate exponentially, $\lceil(n-1)/(b-1)\rceil$ against $\lceil\log_b n\rceil$. On a Boolean store of $k$ independently eliminated candidates they coincide at $k$. Chain height is the number of times future evidence can change the answer, so on a pooled memory adaptive queries and memory are one resource: a policy whose memory is the store makes at most $\sum_j(a_j-1)$ informative queries, whereas a decoder with unrestricted memory exchanges stored bits and query bits one for one. Attention--ReLU artifacts realize both sides of each law, their minimal inference machines are recovered from operational parameters, and finite-symbol hardening preserves the machine whenever the probability mass on wrong symbols lies below an explicit threshold. Most results are machine-checked in Lean~4.\footnote{Lean sources, paper source, and checks: \url{https://anonymous.4open.science/r/neural-artifacts-exchange-law-838F/}}
+An artifact's inference state has two capacities, cardinality and chain height, and independent pooling is priced by the second. The state is the set of distinctions that future observations can expose, a finite meet-semilattice $\R$. Coupled attention needs $\lceil\log_b|\R|\rceil$ coordinates of $b$ values; independently pooled channels of sizes $a_1,\ldots,a_d$ need $\sum_j(a_j-1)\ge\height(\R)-1$, for arbitrary commutative pooling and redundant implementation states. On an $n$-state chain the two are exact and separate exponentially, $\lceil(n-1)/(b-1)\rceil$ against $\lceil\log_b n\rceil$. On a Boolean store of $k$ independently eliminated candidates they coincide at $k$. Chain height is the number of times future evidence can change the answer, so on a pooled memory adaptive queries and memory are one resource: a policy whose memory is the store makes at most $\sum_j(a_j-1)$ informative queries, whereas a decoder with unrestricted memory exchanges stored bits and query bits one for one. Attention--ReLU artifacts realize both sides of each law, their minimal inference machines are recovered from operational parameters, and finite-symbol hardening preserves the machine whenever the probability mass on wrong symbols lies below an explicit threshold. All results in this paper are verified in Lean~4.\footnote{Lean sources, paper source, and checks: \url{https://anonymous.4open.science/r/neural-artifacts-exchange-law-838F/}}
 \end{abstract}
 
 \section{Introduction}
@@ -100,7 +100,7 @@ Our semantic starting point is a version space \citep{mitchell1982generalization
 The inference state $\R$ forced by a task carries two numbers, $|\R|$ and $\height(\R)$. Coupled pooling is priced by the first and independent pooling by the second, so the exchange rate between structure and memory is a property of the store, and the separation of \cref{cor:width} appears exactly when $\height(\R)$ approaches $|\R|$. Chain height is mind-change complexity, the number of times a readout can change along a history; a store that affords many revisions at logarithmic width must couple its coordinates. The same quantity bounds adaptive experimentation on a pooled memory (\cref{thm:policy}), which places the memory law of \cref{app:tables} and the exchange law on one scale. Finite-state extraction and an explicit attention--ReLU compiler connect the laws to artifacts, and finite-symbol hardening preserves the extracted machine, including ties between branches with the same symbol.
 
 \paragraph{Position relative to prior work.}
-Knowledge compilation compares representations through their succinctness and supported queries and transformations \citep{darwiche2002map}. We apply this perspective to the persistent state of neural inference and derive sharp costs for independently compositional representations. The kernel criterion for exact factorization is the classical subdirect-product criterion \citep{birkhoff1944}; the new quantitative result is the exact exchange region for pooled inference, together with matching neural constructions. Automata extraction from recurrent networks uses queries and abstractions to recover state dynamics \citep{weiss2018extracting}. Our extraction theorem supplies an exact bridge from a finite neural execution interface to the same canonical object used by the lower bounds. Soft attention can simulate hard attention under score-gap conditions and preserves a final classifier \citep{yang2026soft}; finite-symbol correction preserves the entire model-inference machine. Slot Attention provides an important example of exchanging information between perceptual features and object-level representations \citep{locatello2020slot}. The algebraic interface below specifies what must be verified to give such an exchange an exact model-inference semantics. Chain height is the mind-change complexity of inductive inference \citep{gold1967,casesmith1983}; the exchange law prices it by the pooling operation.
+Knowledge compilation compares representations through their succinctness and supported queries and transformations \citep{darwiche2002map}. We apply this perspective to the persistent state of neural inference and derive sharp costs for independently compositional representations. The kernel criterion for exact factorization is the classical subdirect-product criterion \citep{birkhoff1944}; the new quantitative result is the exact exchange region for pooled inference, together with matching neural constructions. Automata extraction from recurrent networks uses queries and abstractions to recover state dynamics \citep{weiss2018extracting}. Our extraction theorem supplies an exact bridge from a finite neural execution interface to the same canonical object used by the lower bounds. Soft attention can simulate hard attention under score-gap conditions and preserves a final classifier \citep{yang2026soft}; finite-symbol correction preserves the entire model-inference machine. Slot Attention provides an important example of exchanging information between perceptual features and object-level representations \citep{locatello2020slot}. The algebraic interface below specifies what must be verified to give such an exchange an exact model-inference semantics. Chain height is the mind-change complexity of inductive inference \citep{gold1967,casesmith1983}; the exchange law prices it by the pooling operation. Weight-space learning treats the artifact as data: equivariant architectures on parameter space \citep{navon2023equivariant}, graph metanetworks over computation graphs \citep{lim2024graph,kofinas2024graph}, accuracy predicted from weights \citep{unterthiner2020predicting}, populations of trained models \citep{schurholt2022modelzoos}, and an atlas of public models \citep{horwitz2025atlas}. These learn statistics of the artifact; we characterize what the artifact is obliged to retain.
 
 \section{The inference state represented by an artifact}\label{sec:inference}
 Let $\C$ be a finite set of candidate models, $P$ an observation alphabet, and $K:P\to\powerset(\C)$ a consistency map. The alphabet can include labeled examples, experimental results, or inspected artifact properties. For a history $s=p_1\cdots p_t$, define
@@ -123,7 +123,7 @@ Write $\R=\Latt/{\equiv_\rho}$, with $[U]\wedge[V]=[U\cap V]$ and top element $[
 \end{definition}
 The relation respects intersection: $H\cap W\in\Latt$, so equivalence of $U,V$ implies equivalence of $U\cap W,V\cap W$. Taking $H=\C$ shows that the readout descends to $\R$.
 
-\begin{theorem}[Canonical inference state]\label{thm:canonical}
+\begin{proposition}[Canonical inference state, after \citet{moore1956} and \citet{nerode1958}]\label{thm:canonical}
 The least number of states of a deterministic machine computing $s\mapsto\rho(V(s))$ is $|\R|$. The same minimum holds for machines that pool observations in a finite commutative monoid. Every correct deterministic implementation has a unique map $\delta$ from its reachable states onto $\R$ satisfying
 \begin{equation}
  \delta(m_\epsilon)=[\C],\qquad
@@ -131,7 +131,7 @@ The least number of states of a deterministic machine computing $s\mapsto\rho(V(
  \qquad \operatorname{out}(m)=\bar\rho(\delta(m)).
  \label{eq:simulation}
 \end{equation}
-\end{theorem}
+\end{proposition}
 \begin{proof}
 For a state reached by $s$, set $\delta(m_s)=[V(s)]$. If $m_s=m_t$, every common continuation produces the same output. Every $H\in\Latt$ is the version space of a continuation, so $V(s)\equiv_\rho V(t)$. This proves well-definedness. Every quotient class is reachable; the update and readout equations follow from intersection. Induction on histories proves uniqueness. Hence any implementation has at least $|\R|$ reachable states. Conversely, initialize at $[\C]$, pool $[K(p)]$ by meet, and apply $\bar\rho$. This commutative machine has exactly $|\R|$ states.
 \end{proof}
@@ -249,7 +249,7 @@ A chain congruence has interval blocks: if $x\sim z$ and $x\le y\le z$, meeting 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
-\begin{axis}[width=.83\linewidth,height=2.9cm,xmin=1,xmax=16,ymin=1,ymax=16,
+\begin{axis}[width=.83\linewidth,height=2.7cm,xmin=1,xmax=16,ymin=1,ymax=16,
  xlabel={Structural states $a$},ylabel={Residual states},
  xtick={1,4,8,12,16},ytick={1,4,8,12,16},
  legend style={at={(0.98,0.98)},anchor=north east,font=\small,draw=none},
@@ -403,11 +403,11 @@ Finite acyclic structural causal models give an explicit intervention instance \
 
 A decoder with unrestricted memory obeys instead $B+t\log_2q\ge N\log_2q$ for tables $f:[N]\to[q]$ reconstructed from a $B$-bit target-dependent artifact and at most $t$ adaptive queries (\cref{app:tables}): stored and queried bits exchange one for one because the transcript is retained. A pooled memory retains only its state, so an experiment counts when it moves the state, and memory rungs and informative rounds are the same quantity. The bit law is the coupled case with unrestricted memory. The observation language and model grammar determine which distinctions require table memory: the AES S-box is specified by finite-field inversion and an affine transformation \citep{nist2023aes}, and that grammar, not the table, is the population.
 
-\section{Computational verification and implications}\label{sec:checks}
-Most results are formalized in Lean~4 with Mathlib. The constructions are additionally verified exhaustively on finite families. The network artifacts are compiled from the specified grammars. \Cref{tab:checks} reports the executed checks; \cref{app:checks} defines every enumeration and its assertions.
+\section{What an artifact is obliged to retain}\label{sec:checks}
+Learning on artifacts has a representation-independent target: the inference quotient, its decompositions, and the maps between them. The quotient is what two artifacts share when they implement the same inference; the exchange law separates architectures of equal state cardinality; the hardening certificate names the transformations that preserve all future inference. In a model population the extracted object answers which observations separate models, which queries are already determined, and which experiments change the answer. All results in this paper are verified in Lean~4, and the constructions are executed exhaustively on the finite families of \cref{tab:checks}, each enumeration defined in \cref{app:checks}.
 
 \begin{table}[t]
-\caption{Executed verification. Counts refer to enumerated mathematical objects or input cases, not independent training runs. Every assertion passed.}
+\caption{Exhaustive execution of the constructions. Counts are enumerated objects or input cases.}
 \label{tab:checks}
 \centering
 \small
@@ -429,8 +429,6 @@ Symbol-level hardening cases & 1,080 & Exact criterion, including 210 same-symbo
 \end{table}
 
 Each transition artifact undergoes a hidden-unit permutation before extraction, and all 11,392 shared-block runs preserve protected coordinates and exact symbolic payloads; \cref{app:checks} defines each enumeration and its assertions.
-
-These results suggest a direct target for learning on artifacts: recover the inference quotient, its decompositions, and the maps between them. The quotient gives a representation-independent object for comparison; the exchange law distinguishes architectures with the same state cardinality; and the hardening certificate identifies transformations that preserve all future inference. In a model population, the extracted object supports questions about which observations separate models, which queries are already determined, and which additional experiments change the answer.
 
 \paragraph{Certified artifact transformations.}
 The extracted machine supports three certified operations: state compression, which merges states with the same continuation behavior; representation factorization, which chooses a structural congruence $\alpha$ and computes its minimum compatible residual through \eqref{eq:comp}; and hardening, which preserves the entire transition system through the local symbol-mass certificate. Each is invariant under relabeling of the extracted states, so artifacts are compared by the inference operations they implement and the distinctions those operations retain.

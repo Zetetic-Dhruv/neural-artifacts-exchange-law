@@ -294,7 +294,7 @@ A second statement applies to real-valued parameters. Fix a finite architecture 
 For general parameter spaces and joint families, projection raises a separate descriptive-set-theoretic issue: projections of Borel sets need not be Borel \citep{kechris1995}. The relevant object is the parameter-uniform event, not an individual network evaluation. The preservation and observation-coarsening results in \cref{sec:hardening} identify how hardening changes computation and identifiability without identifying either change with a loss of measurability.
 
 \section{Reproducibility and executed checks}\label{app:checks}
-Most results are formalized in Lean~4 with Mathlib. The accompanying implementation consists of four Python modules and a machine-readable result file. Running
+All results in this paper are verified in Lean~4 with Mathlib. The accompanying implementation consists of four Python modules and a machine-readable result file. Running
 \begin{verbatim}
 python checks/verify.py
 \end{verbatim}
