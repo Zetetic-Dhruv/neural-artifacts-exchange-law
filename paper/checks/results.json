@@ -1,0 +1,218 @@
+{
+  "status": "all assertions passed",
+  "scope": "finite mathematical and compiled-network checks; no training experiment or Lean compilation",
+  "environment": {
+    "python": "3.13.5",
+    "numpy": "2.3.5"
+  },
+  "quotient": {
+    "candidate_range": [
+      1,
+      3
+    ],
+    "meet_closed_families": 70,
+    "readout_cases": 2120,
+    "checks": "suffix equivalence = iterative automaton equivalence; meet congruence; output descends"
+  },
+  "chain": {
+    "range": [
+      1,
+      7
+    ],
+    "structural_quotients_checked": 127,
+    "counts": [
+      {
+        "chain_states": 1,
+        "congruences": 1
+      },
+      {
+        "chain_states": 2,
+        "congruences": 2
+      },
+      {
+        "chain_states": 3,
+        "congruences": 4
+      },
+      {
+        "chain_states": 4,
+        "congruences": 8
+      },
+      {
+        "chain_states": 5,
+        "congruences": 16
+      },
+      {
+        "chain_states": 6,
+        "congruences": 32
+      },
+      {
+        "chain_states": 7,
+        "congruences": 64
+      }
+    ],
+    "four_chain": {
+      "structure": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "optimal_compositional_residual": [
+        0,
+        1,
+        1,
+        2
+      ],
+      "static_binary_residual": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "static_cost": 2,
+      "compositional_cost": 3
+    }
+  },
+  "boolean": [
+    {
+      "bits": 1,
+      "structural_bits": 0,
+      "residual_states": 2
+    },
+    {
+      "bits": 1,
+      "structural_bits": 1,
+      "residual_states": 1
+    },
+    {
+      "bits": 2,
+      "structural_bits": 0,
+      "residual_states": 4
+    },
+    {
+      "bits": 2,
+      "structural_bits": 1,
+      "residual_states": 2
+    },
+    {
+      "bits": 2,
+      "structural_bits": 2,
+      "residual_states": 1
+    },
+    {
+      "bits": 3,
+      "structural_bits": 0,
+      "residual_states": 8
+    },
+    {
+      "bits": 3,
+      "structural_bits": 1,
+      "residual_states": 4
+    },
+    {
+      "bits": 3,
+      "structural_bits": 2,
+      "residual_states": 2
+    },
+    {
+      "bits": 3,
+      "structural_bits": 3,
+      "residual_states": 1
+    }
+  ],
+  "multiway": {
+    "chain_sizes": [
+      2,
+      32
+    ],
+    "alphabet_sizes": [
+      2,
+      8
+    ],
+    "cases": 217
+  },
+  "machine_extraction": {
+    "machines": 2120,
+    "exact_transition_checks": 72911,
+    "hidden_permutation_seed": 20260907,
+    "all_quotients_match": true
+  },
+  "forest_extraction": {
+    "networks": 356,
+    "inputs_per_network": 8,
+    "hard_roundtrip_cases": 2848,
+    "distinct_boolean_functions": 256,
+    "soft_temperatures": [
+      0.1,
+      0.25,
+      0.5
+    ],
+    "soft_roundtrip_cases": 8544,
+    "minimum_routing_margin": 1.0,
+    "soft_max_absolute_error": 0.0
+  },
+  "literal_transformer": {
+    "artifacts": 356,
+    "network_input_temperature_cases": 11392,
+    "temperatures": [
+      0.0,
+      0.1,
+      0.25,
+      0.5
+    ],
+    "max_absolute_error": 0.0,
+    "max_codebook_or_scratch_error": 0.0,
+    "shared_projections_and_ffns": true,
+    "protected_coordinates_unchanged": true
+  },
+  "commutative_monoids": {
+    "counts": [
+      {
+        "carrier_size": 1,
+        "commutative_monoids": 1
+      },
+      {
+        "carrier_size": 2,
+        "commutative_monoids": 2
+      },
+      {
+        "carrier_size": 3,
+        "commutative_monoids": 9
+      },
+      {
+        "carrier_size": 4,
+        "commutative_monoids": 94
+      }
+    ],
+    "nonidempotent_monoids": 93,
+    "surjective_chain_homomorphisms": 329,
+    "all_idempotent_lifts_and_height_bounds_pass": true
+  },
+  "symbol_hardening": {
+    "gate_cases": 1080,
+    "equal_symbol_tie_cases": 210,
+    "temperatures": [
+      0.1,
+      0.25,
+      0.5,
+      1.0,
+      2.0
+    ],
+    "cleanup_eta": 0.25,
+    "necessary_sufficient_symbol_mass_test": true
+  },
+  "coupled_min": {
+    "chain_sizes": [
+      2,
+      64
+    ],
+    "alphabets": [
+      2,
+      3,
+      4,
+      8
+    ],
+    "hard_attention_min_cases": 357756,
+    "all_joint_width_bounds_attained": true
+  }
+}

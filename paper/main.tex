@@ -1,0 +1,454 @@
+\documentclass{article}
+% Stable PDF metadata; the visible review copy remains anonymous.
+\pdfinfoomitdate=1
+\pdftrailerid{}
+\PassOptionsToPackage{numbers,sort&compress}{natbib}
+\usepackage[dblblindworkshop,nonanonymous]{neurips_2026}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,multirow}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{aliascnt}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\newtheorem{theorem}{Theorem}
+\newaliascnt{proposition}{theorem}
+\newtheorem{proposition}[proposition]{Proposition}
+\aliascntresetthe{proposition}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\newaliascnt{corollary}{theorem}
+\newtheorem{corollary}[corollary]{Corollary}
+\aliascntresetthe{corollary}
+\crefname{corollary}{corollary}{corollaries}
+\Crefname{corollary}{Corollary}{Corollaries}
+\newaliascnt{lemma}{theorem}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+\crefname{lemma}{lemma}{lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\theoremstyle{definition}
+\newaliascnt{definition}{theorem}
+\newtheorem{definition}[definition]{Definition}
+\aliascntresetthe{definition}
+\crefname{definition}{definition}{definitions}
+\Crefname{definition}{Definition}{Definitions}
+\newaliascnt{example}{theorem}
+\newtheorem{example}[example]{Example}
+\aliascntresetthe{example}
+\crefname{example}{example}{examples}
+\Crefname{example}{Example}{Examples}
+\newcommand{\C}{\mathcal C}
+\newcommand{\Latt}{\mathcal L}
+\newcommand{\R}{\mathcal R}
+\newcommand{\V}{\mathcal V}
+\newcommand{\NN}{\mathbb N}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\ind}{\mathbf 1}
+\newcommand{\relu}{\operatorname{ReLU}}
+\newcommand{\height}{\operatorname{ht}}
+\newcommand{\Idem}{\operatorname{Idem}}
+\newcommand{\Con}{\operatorname{Con}_{\wedge}}
+\newcommand{\Mcomp}{M_{\mathrm{comp}}}
+\newcommand{\Mstat}{M_{\mathrm{stat}}}
+\newcommand{\dec}[1]{[\![#1]\!]}
+\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\powerset}{\mathcal P}
+\newcommand{\code}{\mathsf{code}}
+\newcommand{\compile}{\mathsf{compile}}
+\newcommand{\extract}{\mathsf{extract}}
+\newcommand{\cl}{\operatorname{cl}}
+\newcommand{\kerop}{\operatorname{ker}}
+\newcommand{\Min}{\operatorname{Min}}
+\newcommand{\sym}{\mathsf{sym}}
+\newcommand{\obs}{\mathsf{obs}}
+\newcommand{\model}{\mathsf{model}}
+\newcommand{\doop}{\operatorname{do}}
+\newcommand{\readout}{\rho}
+\newcommand{\bottomans}{\mathsf{inconsistent}}
+\newcommand{\unknown}{\mathsf{undetermined}}
+\newcommand{\ceil}[1]{\left\lceil #1\right\rceil}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\abs}[1]{\left|#1\right|}
+\hypersetup{pdftitle={Model Inference from Neural Artifacts: An Exchange Law for Structure and Memory},pdfauthor={},pdfsubject={Neural artifact analysis and finite-state model inference},pdfkeywords={neural artifacts, model inference, version spaces, attention, model extraction}}
+\title{Model Inference from Neural Artifacts:\\An Exchange Law for Structure and Memory}
+\author{Anonymous Author(s)}
+\workshoptitle{Neural Network Artifacts as a New Data Modality}
+\begin{document}
+\maketitle
+\begin{abstract}
+An artifact's inference state has two capacities, cardinality and chain height, and independent pooling is priced by the second. The state is the set of distinctions that future observations can expose, a finite meet-semilattice $\R$. Coupled attention needs $\lceil\log_b|\R|\rceil$ coordinates of $b$ values; independently pooled channels of sizes $a_1,\ldots,a_d$ need $\sum_j(a_j-1)\ge\height(\R)-1$, for arbitrary commutative pooling and redundant implementation states. On an $n$-state chain the two are exact and separate exponentially, $\lceil(n-1)/(b-1)\rceil$ against $\lceil\log_b n\rceil$. On a Boolean store of $k$ independently eliminated candidates they coincide at $k$. Chain height is the number of times future evidence can change the answer, so on a pooled memory adaptive queries and memory are one resource: a policy whose memory is the store makes at most $\sum_j(a_j-1)$ informative queries, whereas a decoder with unrestricted memory exchanges stored bits and query bits one for one. Attention--ReLU artifacts realize both sides of each law, their minimal inference machines are recovered from operational parameters, and finite-symbol hardening preserves the machine whenever the probability mass on wrong symbols lies below an explicit threshold. Most results are machine-checked in Lean~4.
+\end{abstract}
+
+\section{Introduction}
+Neural artifacts contain more than the answers returned on an evaluation set. Their weights, routing decisions, and intermediate representations also determine how information is stored, combined, and used after new evidence arrives. Learning directly on network parameters already supports model comparison and prediction, with parameter symmetries providing a central architectural principle \citep{zhou2023nfn}. We study a complementary question: \emph{which model of inference can be recovered from an artifact, and which distinctions must its internal representations preserve?}
+
+A network can represent candidate models through different mechanisms. Attention can expose a selection rule or a compositional routing tree; feedforward computations can retain tables, transformations, and residual information. These roles do not assign an intrinsic meaning to a layer type. Instead, we specify their common semantic interface: each representation participates in maintaining the model possibilities consistent with observations. The central issue is then whether information stored in one representation can replace information stored in another while preserving future inference.
+
+Counting states gives a necessary condition, but misses the cost of composition. A four-state chain can be encoded by two bits. It cannot be maintained by two independently pooled binary channels, even when their pooling operations are chosen freely. Three such channels suffice. The discrepancy is not a shortage of bits at a single instant: it arises because each channel must combine evidence without consulting the others. We prove the exact law for every chain size and every finite commutative pooling architecture. At fixed state cardinality, a Boolean store has a different exchange law because complementary coordinates preserve intersection independently.
+
+Our semantic starting point is a version space \citep{mitchell1982generalization}. An observation removes incompatible candidates, and an inference rule reads the survivors. We identify two version spaces when no permitted continuation changes the inference rule's answer between them. This is the classical automata-minimization construction \citep{moore1956,nerode1958}, applied to the meet-semilattice generated by model observations. Every correct implementation has a unique interpretation onto this quotient on its reachable states. The inference task forces the semantic object.
+
+The inference state $\R$ forced by a task carries two numbers, $|\R|$ and $\height(\R)$. Coupled pooling is priced by the first and independent pooling by the second, so the exchange rate between structure and memory is a property of the store, and the separation of \cref{cor:width} appears exactly when $\height(\R)$ approaches $|\R|$. Chain height is mind-change complexity, the number of times a readout can change along a history; a store that affords many revisions at logarithmic width must couple its coordinates. The same quantity bounds adaptive experimentation on a pooled memory (\cref{thm:policy}), which places the memory law of \cref{app:tables} and the exchange law on one scale. Finite-state extraction and an explicit attention--ReLU compiler connect the laws to artifacts, and finite-symbol hardening preserves the extracted machine, including ties between branches with the same symbol.
+
+\paragraph{Position relative to prior work.}
+Knowledge compilation compares representations through their succinctness and supported queries and transformations \citep{darwiche2002map}. We apply this perspective to the persistent state of neural inference and derive sharp costs for independently compositional representations. The kernel criterion for exact factorization is the classical subdirect-product criterion \citep{birkhoff1944}; the new quantitative result is the exact exchange region for pooled inference, together with matching neural constructions. Automata extraction from recurrent networks uses queries and abstractions to recover state dynamics \citep{weiss2018extracting}. Our extraction theorem supplies an exact bridge from a finite neural execution interface to the same canonical object used by the lower bounds. Soft attention can simulate hard attention under score-gap conditions and preserves a final classifier \citep{yang2026soft}; finite-symbol correction preserves the entire model-inference machine. Slot Attention provides an important example of exchanging information between perceptual features and object-level representations \citep{locatello2020slot}. The algebraic interface below specifies what must be verified to give such an exchange an exact model-inference semantics. Chain height is the mind-change complexity of inductive inference \citep{gold1967,casesmith1983}; the exchange law prices it by the pooling operation.
+
+\section{The inference state represented by an artifact}\label{sec:inference}
+Let $\C$ be a finite set of candidate models, $P$ an observation alphabet, and $K:P\to\powerset(\C)$ a consistency map. The alphabet can include labeled examples, experimental results, or inspected artifact properties. For a history $s=p_1\cdots p_t$, define
+\begin{equation}
+ V(s)=\bigcap_{i=1}^tK(p_i),\qquad V(\epsilon)=\C,
+ \qquad \Latt=\{V(s):s\in P^*\}.
+ \label{eq:version}
+\end{equation}
+The finite family $\Latt$ contains $\C$ and is closed under intersection, since $V(st)=V(s)\cap V(t)$. Fix a readout $\rho:\Latt\to Y$. First-consistent-model selection and query certification are examples. Empty version spaces receive an explicit inconsistency answer whenever consistency is relevant.
+
+\begin{definition}[Continuation equivalence]\label{def:nerode}
+For $U,V\in\Latt$, let
+\begin{equation}
+ U\equiv_\rho V
+ \quad\Longleftrightarrow\quad
+ \rho(U\cap H)=\rho(V\cap H)\quad\text{for every }H\in\Latt.
+ \label{eq:nerode}
+\end{equation}
+Write $\R=\Latt/{\equiv_\rho}$, with $[U]\wedge[V]=[U\cap V]$ and top element $[\C]$.
+\end{definition}
+The relation respects intersection: $H\cap W\in\Latt$, so equivalence of $U,V$ implies equivalence of $U\cap W,V\cap W$. Taking $H=\C$ shows that the readout descends to $\R$.
+
+\begin{theorem}[Canonical inference state]\label{thm:canonical}
+The least number of states of a deterministic machine computing $s\mapsto\rho(V(s))$ is $|\R|$. The same minimum holds for machines that pool observations in a finite commutative monoid. Every correct deterministic implementation has a unique map $\delta$ from its reachable states onto $\R$ satisfying
+\begin{equation}
+ \delta(m_\epsilon)=[\C],\qquad
+ \delta(\operatorname{step}(m,p))=\delta(m)\wedge[K(p)],
+ \qquad \operatorname{out}(m)=\bar\rho(\delta(m)).
+ \label{eq:simulation}
+\end{equation}
+\end{theorem}
+\begin{proof}
+For a state reached by $s$, set $\delta(m_s)=[V(s)]$. If $m_s=m_t$, every common continuation produces the same output. Every $H\in\Latt$ is the version space of a continuation, so $V(s)\equiv_\rho V(t)$. This proves well-definedness. Every quotient class is reachable; the update and readout equations follow from intersection. Induction on histories proves uniqueness. Hence any implementation has at least $|\R|$ reachable states. Conversely, initialize at $[\C]$, pool $[K(p)]$ by meet, and apply $\bar\rho$. This commutative machine has exactly $|\R|$ states.
+\end{proof}
+
+The quotient depends on both the available observations and the required answers. A constant readout gives one state even when $\Latt$ is large. An injective readout gives $\R=\Latt$. Enlarging the observation language or enriching the readout changes the distinctions that an artifact must retain. In particular, a width-$W$ state with $b$ possible values per coordinate satisfies
+\begin{equation}
+ |\R|\le b^W.\label{eq:cardinality}
+\end{equation}
+Here $b$ is an alphabet size: $p$-bit coordinates have $b=2^p$. Equation~\eqref{eq:cardinality} counts persistent inference states, independently of the implementation of the candidate models.
+
+The second number is the height $\height(\R)$, the number of elements in a longest chain. Along any history the states $[V(s)]$ descend in $\R$, so the readout changes at most $\height(\R)-1$ times, and the Boolean store with first-consistent-model selection attains this on the history that eliminates candidates from the bottom. Cardinality is what a coupled store must hold; height is what an independent one must hold (\cref{sec:exchange}).
+
+\paragraph{Concrete stores.}
+Nested consistency sets $U_0\subsetneq\cdots\subsetneq U_{n-1}=\C$, together with a readout that distinguishes them, give the chain $C_n$. Positive observations of ordered thresholds give this form with a suitable domain and readout. Independent candidate eliminations generate the Boolean store $2^{[k]}$; reading the full survivor set distinguishes all $2^k$ states.
+
+\section{An exact exchange law}\label{sec:exchange}
+An independent pooled channel consists of a finite commutative monoid $M_j$ and an observation embedding $e_j:P\to M_j$. Its state after $s$ is
+\begin{equation}
+ \mu_j(s)=\prod_{p\in s}e_j(p).
+ \label{eq:independent}
+\end{equation}
+A joint readout can inspect every channel, but each channel combines observations using its own operation. The monoids need not be idempotent, and different histories with the same inference state can have different implementations. We write $\height(Q)$ for the number of elements in a longest chain of a finite partially ordered set $Q$.
+
+\begin{theorem}[Exchange under independent pooling]\label{thm:exchange}
+Suppose $d$ independent pooled channels compute the inference task of \cref{sec:inference}. Let $E_j=\Idem(M_j)=\{x:x^2=x\}$, ordered by $x\le y$ when $xy=x$. Then
+\begin{equation}
+ |\R|\le\prod_{j=1}^d|M_j|,
+ \qquad
+ \height(\R)-1\le\sum_{j=1}^d\bigl(\height(E_j)-1\bigr)
+                 \le\sum_{j=1}^d(|M_j|-1).
+ \label{eq:height}
+\end{equation}
+For $\R=C_n$ and channel budgets $a_j\ge1$, a correct implementation with $|M_j|\le a_j$ exists if and only if
+\begin{equation}
+ \boxed{\ \sum_{j=1}^d(a_j-1)\ge n-1.\ }\label{eq:chainregion}
+\end{equation}
+\end{theorem}
+\begin{proof}
+Let $S$ be the image of $s\mapsto(\mu_1(s),\ldots,\mu_d(s))$. It is a submonoid of $\prod_jM_j$. By \cref{thm:canonical}, the map $\delta:S\to\R$ is well-defined and surjective. It is a monoid homomorphism because concatenation corresponds to multiplication in $S$ and meet in $\R$.
+
+Every element of a finite monoid has an idempotent positive power. Since $\delta(x^r)=\delta(x)$ for $r\ge1$, the restriction $\delta:\Idem(S)\to\R$ remains surjective. Commutativity makes $\Idem(S)$ a meet-semilattice, contained in $\prod_jE_j$. Lift a chain $r_1<\cdots<r_h$ in $\R$ to idempotents $e_i$ and set $z_i=e_i\cdots e_h$. Then $z_i\le z_{i+1}$ and $\delta(z_i)=r_i$, so the lifted chain is strict. A chain in a product has at most $1+\sum_j(\height(E_j)-1)$ elements: every strict step advances at least one coordinate. This proves \eqref{eq:height} and the necessity of \eqref{eq:chainregion}.
+
+For sufficiency, label the chain $0<\cdots<n-1$. Distribute its $n-1$ adjacent boundaries among sets $B_j$, with $|B_j|\le a_j-1$. The map
+\begin{equation}
+ f_j(r)=|\{c\in B_j:c<r\}|\label{eq:cuts}
+\end{equation}
+preserves minimum and takes $|B_j|+1$ values. Every boundary is distinguished by some coordinate, so the paired map is injective. Pool with minimum in each coordinate and decode the joint state.
+\end{proof}
+
+The use of idempotent powers is essential: the lower bound applies to redundant encodings, cyclic state components, and all other finite commutative pooling operations. In particular, a finite group contributes no order height because its identity is its only idempotent.
+
+\begin{corollary}[Independent versus coupled width]\label{cor:width}
+For an $n$-state chain and $b\ge2$, the minimum number of independently pooled $b$-value coordinates is
+\begin{equation}
+ W_{\mathrm{ind}}(n,b)=\ceil{\frac{n-1}{b-1}}.
+ \label{eq:widthind}
+\end{equation}
+If the pooling operation can mix coordinates, the exact minimum is
+\begin{equation}
+ W_{\mathrm{joint}}(n,b)=\ceil{\log_b n}.\label{eq:widthjoint}
+\end{equation}
+\end{corollary}
+\begin{proof}
+The first equality is \cref{thm:exchange}. For the second, encode the rank in base $b$ and implement minimum on the represented ranks. The cardinality bound \eqref{eq:cardinality} is necessary and attained. Place unused codes below the reachable chain to extend minimum to the full $b^W$-element carrier. The encoded top remains the monoid identity and unused codes are not reached.
+\end{proof}
+
+For $n=2^k$, independent binary pooling requires $2^k-1$ persistent coordinates, while coupled pooling requires $k$. A coupled head can implement minimum directly: assign keys $-r,-s$, query $1$, and values equal to the digit encodings of $r,s$. Hard attention selects the smaller rank. For equal ranks the values coincide, so any tie rule gives the same result.
+
+\begin{corollary}[Width for an arbitrary inference state]\label{cor:general}
+For any finite $\R$ and $b\ge2$,
+\begin{equation}
+ W_{\mathrm{joint}}(\R,b)=\ceil{\log_b|\R|},\qquad
+ W_{\mathrm{ind}}(\R,b)\ge\max\left\{\ceil{\log_b|\R|},\ \ceil{\frac{\height(\R)-1}{b-1}}\right\}.
+ \label{eq:general}
+\end{equation}
+For the Boolean store $2^{[k]}$ with survivor readout, $W_{\mathrm{ind}}=W_{\mathrm{joint}}=k$.
+\end{corollary}
+\begin{proof}
+The coupled construction of \cref{cor:width} extends to any $\R$ by sending unused codes to an adjoined absorbing bottom, which keeps the carrier a commutative idempotent monoid with identity $[\C]$; \eqref{eq:cardinality} forbids fewer coordinates. The lower bound is \eqref{eq:cardinality} together with \eqref{eq:height} at $|M_j|\le b$. One binary channel per candidate, pooled by conjunction, reaches every survivor set of $2^{[k]}$ with an injective readout, and $|2^{[k]}|=2^k$ forbids fewer coordinates under any pooling.
+\end{proof}
+The separation belongs to chains: the ratio $W_{\mathrm{ind}}/W_{\mathrm{joint}}$ is controlled by $\height(\R)/\log_b|\R|$, which is $n/\log_bn$ on $C_n$ and $1+1/k$ on $2^{[k]}$.
+
+\subsection{How a structural view replaces residual memory}
+A normalized compositional view of $\R$ is a meet homomorphism $a:\R\to A$. Its kernel $\alpha$ is a meet congruence: equivalent states remain equivalent after intersection with any state. A second view $g:\R\to G$, with kernel $\beta$, jointly determines the inference state precisely when
+\begin{equation}
+ \alpha\cap\beta=\Delta_\R.\label{eq:subdirect}
+\end{equation}
+This is the subdirect-product criterion \citep{birkhoff1944}. At a fixed structural view, its exact compositional residual requirement is therefore
+\begin{equation}
+ \Mcomp(\alpha)=
+ \min_{\substack{\beta\in\Con(\R)\\\alpha\cap\beta=\Delta_\R}}
+ |\R/\beta|.
+ \label{eq:comp}
+\end{equation}
+Refining the structural view from $\alpha$ to $\alpha'\subseteq\alpha$ enlarges the feasible set in \eqref{eq:comp}; hence $\Mcomp(\alpha')\le\Mcomp(\alpha)$. In contrast, an arbitrary residual code used to reconstruct the state once requires exactly
+\begin{equation}
+ \Mstat(\alpha)=\max_{F\in\R/\alpha}|F|.\label{eq:static}
+\end{equation}
+Assign distinct labels within each fibre and reuse them across fibres. This construction need not support independent updates.
+
+\begin{proposition}[Sharp chain and Boolean exchange]\label{prop:exact}
+For a chain $C_n$ and any structural meet quotient with $a$ states,
+\begin{equation}
+ \boxed{\Mcomp(\alpha)=n-a+1.}\label{eq:residualchain}
+\end{equation}
+The same minimum holds when the residual is an arbitrary finite commutative pooled channel, including redundant histories. For $\R=2^{[k]}$ with structural view $U\mapsto U\cap J$, $|J|=s$,
+\begin{equation}
+ \boxed{\Mcomp(\alpha)=\Mstat(\alpha)=2^{k-s}.}\label{eq:boolean}
+\end{equation}
+\end{proposition}
+\begin{proof}
+A chain congruence has interval blocks: if $x\sim z$ and $x\le y\le z$, meeting with $y$ gives $x\sim y$. Its $a$ blocks distinguish $a-1$ boundaries. The residual must distinguish the other $n-a$ boundaries, and cutting exactly these boundaries attains $n-a+1$ states. The general lower bound follows from \cref{thm:exchange}, with the fixed structural quotient as the first channel. For the Boolean store, every structural fibre has $2^{k-s}$ elements, requiring that many distinct residual values. Projection to $[k]\setminus J$ attains the bound and preserves intersection.
+\end{proof}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=.83\linewidth,height=3.5cm,xmin=1,xmax=16,ymin=1,ymax=16,
+ xlabel={Structural states $a$},ylabel={Residual states},
+ xtick={1,4,8,12,16},ytick={1,4,8,12,16},
+ legend style={at={(0.98,0.98)},anchor=north east,font=\small,draw=none},
+ tick label style={font=\small},label style={font=\small}]
+\addplot[thick,domain=1:16,samples=16]{17-x};
+\addlegendentry{Chain: $17-a$}
+\addplot[thick,dashed,mark=square*,mark size=2pt] coordinates {(1,16)(2,8)(4,4)(8,2)(16,1)};
+\addlegendentry{Boolean coordinate views: $16/a$}
+\addplot[only marks,mark=*,mark size=2pt] coordinates {(4,13)};
+\node[anchor=south west,font=\small] at (axis cs:4,13) {$(4,13)$};
+\node[anchor=north east,font=\small] at (axis cs:4,4) {$(4,4)$};
+\end{axis}
+\end{tikzpicture}
+\caption{Exact structure--memory exchange for two 16-state inference tasks. A four-state structural view leaves 13 compositional residual states in a chain and four in a Boolean store with two exposed coordinates. The Boolean line joins the admissible coordinate projections. State cardinality alone does not determine the exchange rate.}
+\label{fig:exchange}
+\end{figure}
+
+For the four-state chain, take structural blocks $\{0,1\},\{2,3\}$. A static binary residual can record parity. It cannot update by itself: $0$ and $2$ have the same parity, but meeting each with $1$ gives $0$ and $1$. A compositional residual instead uses $\{0\},\{1,2\},\{3\}$. This example separates recoverable information from independently reusable information.
+
+\section{Recovering models from neural artifacts}\label{sec:neural}
+The exchange law concerns the semantic state represented by an artifact. We now give operational extraction and realization procedures. An artifact specifies its architecture, parameters, initial state, numerical semantics, and readout; these determine a transition function $F_\theta(z,p)$.
+
+\begin{theorem}[Finite-state extraction]\label{thm:extract}
+Let $Z$ be a finite state codebook containing $z_0$, let $P$ be finite, and suppose $F_\theta:Z\times P\to Z$ and $o_\theta:Z\to Y$ can be evaluated exactly. From the operational artifact one can recover the reachable transition table, its minimal Moore machine, and a state-by-state simulation onto that machine. If the artifact computes $\rho(V(s))$ for every $s\in P^*$, the extracted minimal machine is isomorphic to $\R$. If its minimized input transitions commute and are idempotent, the artifact itself determines its meet-semilattice representation, and any meet law consistent with its transitions is that one.
+\end{theorem}
+\begin{proof}
+Starting at $z_0$, enumerate every transition from each newly reached state. This terminates after at most $|Z||P|$ evaluations. Partition the reachable states by readout, and repeatedly refine by successor-block signatures until stable. Induction on continuation length shows that the final equivalence is agreement on every future output. The quotient and projection give the required machine and simulation. \Cref{thm:canonical} identifies this quotient with $\R$. For the final statement, choose an access word $w_r$ for each minimal state $r$, and define $r\wedge s$ by running $w_s$ from $r$. Commutativity makes this independent of the access word; idempotence makes it a meet. The initial state is its top. \Cref{app:extraction} proves the representation and its uniqueness.
+\end{proof}
+
+A finite-precision execution supplies a finite codebook directly, with every persistent register included. The extraction is invariant under function-preserving hidden-neuron permutations because it depends on the transition function, not the ordering of its implementation units. State-coordinate relabelings yield isomorphic extracted machines. These are the semantic symmetries relevant to model inference, complementing parameter-level equivariance \citep{zhou2023nfn}.
+
+The last clause gives a fully operational analysis: extract the transition system, minimize it, test commutativity and idempotence of its input transitions, and recover the meet operation. The candidate realization $\C=\R$, $K(p)=\{r:r\le t_p(\top)\}$ then has survivor sets $\mathord{\downarrow}r$. The artifact determines this operational version-space model; an external model population supplies its application-specific interpretation. For continuous-state artifacts, a finite invariant-region certificate gives the same extraction theorem; rational hard-attention/ReLU maps and semialgebraic regions admit exact certificate checking (\cref{app:extraction}).
+
+\subsection{Attention forests and finite feedforward maps}
+We use a typed code grammar with finite input alphabet $X$. A leaf is a finite map $f:X\to Y$. An internal node has children $c_1,\ldots,c_k$ with common finite output alphabet $Y$, affine scores $s_j(x)$ in a declared feature vector $\phi(x)$, and a finite map $g:Y\to Y'$. Its interpretation is
+\begin{equation}
+ \dec{c}(x)=g\bigl(\dec{c_{j^*(x)}}(x)\bigr),
+ \qquad j^*(x)=\min\argmax_j s_j(x).
+ \label{eq:code}
+\end{equation}
+A forest provides multiple such outputs. Fixed attention reads followed by finite tuple maps compose these outputs into a finite-state update or a model-query program. Neither the grammar nor the store requires the candidate models themselves to be linear.
+
+\begin{theorem}[Neural realization and extraction]\label{thm:compiler}
+Every finite attention forest of the form \eqref{eq:code} has a masked dot-product attention implementation with shared positionwise ReLU feedforward maps, residual connections, and no normalization. Its operational parameters determine an extracted code satisfying
+\begin{equation}
+ \dec{\extract(\compile(c))}(x)=\dec{c}(x)
+ \quad\text{for every }x\in X.\label{eq:roundtrip}
+\end{equation}
+Any finite transition system can be realized by a ReLU update, and composing either construction with \cref{thm:extract} recovers its minimal inference machine.
+\end{theorem}
+\begin{proof}[Construction]
+Encode a symbol $y$ as the basis vector $e_y$. A finite map has matrix $H_ge_y=e_{g(y)}$. An affine score $\alpha_j^\top\phi(x)+\beta_j$ is a dot product between query $(\phi(x),1)$ and key $(\alpha_j,\beta_j)$. Hard attention selects the child value, and the feedforward map applies $H_g$. For shared feedforward dispatch, pair a node-identity coordinate $u_i$ and a symbol coordinate $v_j$ using $\relu(u_i+v_j-1)$; this is their conjunction on one-hot inputs. Masks isolate each parent's children. Separate protected, payload, and scratch coordinates preserve features and implement residual overwrites. \Cref{app:compiler} gives the complete layer construction and the inductive proof.
+
+For a transition table $T:[N]\times[m]\to[N]$, the hidden units
+\begin{equation}
+ h_{ij}(z,p)=\relu(z_i+p_j-1),\qquad
+ F(z,p)=\sum_{i,j}e_{T(i,j)}h_{ij}(z,p)\label{eq:ffntable}
+\end{equation}
+implement $F(e_i,e_j)=e_{T(i,j)}$ exactly. Extraction evaluates these operational maps and reads the routing scores and wiring. No unused source-code identifier is required.
+\end{proof}
+
+The compiler realizes both sides of \cref{cor:width}. Independent channels implement the cut maps \eqref{eq:cuts}; a joint attention operation implements minimum on compact digit codes. Compositional structure supports model inference when the extracted maps preserve the relevant operations; a large feedforward table supports the same task by retaining the corresponding transition information.
+
+\section{Hardening preserves inference through finite symbols}\label{sec:hardening}
+Changing softmax weights to argmax decisions changes the executed function in general. We instead give an exact preservation condition at the symbolic interfaces of \cref{thm:compiler}. The correction function below is the standard ReLU rounding construction used in soft-attention simulations \citep{yang2026soft}, parameterized by a tolerance $0<\eta<1/2$:
+\begin{equation}
+ R_\eta(t)=\frac{\relu(t-\eta)-\relu(t-1+\eta)}{1-2\eta}.
+ \label{eq:round}
+\end{equation}
+Apply it coordinatewise before the finite map $H_g$.
+
+\begin{theorem}[Exact symbolic hardening]\label{thm:hardening}
+At a gate with scores $s_j$ and one-hot child values $e_{y_j}$, let $j^*$ be the deterministic hard winner and $y^*=y_{j^*}$. For temperature $T>0$, write
+\begin{equation}
+ p_j(T)=\frac{e^{s_j/T}}{\sum_i e^{s_i/T}},\qquad
+ \eps_{\ne y^*}(T)=\sum_{j:y_j\ne y^*}p_j(T).
+ \label{eq:wrongmass}
+\end{equation}
+Then
+\begin{equation}
+ R_\eta\left(\sum_jp_j(T)e_{y_j}\right)=e_{y^*}
+ \quad\Longleftrightarrow\quad \eps_{\ne y^*}(T)\le\eta.
+ \label{eq:exactmass}
+\end{equation}
+Suppose every maximum-score branch returns $y^*$, there are $m_*$ such branches, and every branch with a different symbol has score at most $s_{j^*}-\delta$ for some $\delta>0$. If $k_-$ branches have a different symbol, then
+\begin{equation}
+ \eps_{\ne y^*}(T)\le\frac{r(T)}{1+r(T)},\qquad
+ r(T)=\frac{k_-}{m_*}e^{-\delta/T}.
+ \label{eq:margin}
+\end{equation}
+A forest whose every gate satisfies \eqref{eq:exactmass} on its symbolic inputs computes exactly the same function at temperature $T$ and at hard attention. When used as a state update, it preserves every history and hence the extracted inference quotient and all exchange laws above.
+\end{theorem}
+\begin{proof}
+The coordinate of $y^*$ in the mixture is $1-\eps_{\ne y^*}$, and the other coordinates sum to $\eps_{\ne y^*}$. The map $R_\eta$ is zero on $[0,\eta]$, one on $[1-\eta,1]$, and strictly between them otherwise. This proves \eqref{eq:exactmass}. The total unnormalized weight of different symbols is at most $k_-e^{(s_{j^*}-\delta)/T}$, while the weight of $y^*$ is at least $m_*e^{s_{j^*}/T}$. Their ratio proves \eqref{eq:margin}. Induction over the forest restores an exact symbol after each gate, so errors do not accumulate with depth. Induction over state updates then proves equality on all histories.
+\end{proof}
+
+For a unique winner with gap $\delta$ from every other branch, a sufficient condition is
+\begin{equation}
+ T\le\frac{\delta}{\log((k-1)(1-\eta)/\eta)}\qquad(k\ge2).
+ \label{eq:temperature}
+\end{equation}
+The symbol-based criterion is stronger than unique-route stability: tied or changing routes cause no loss when they return the same symbol. Conversely, branches with different values at an unresolved tie can invalidate hardening. Without correction, a soft gate mixing constants $0,1$ returns an interior value that a hard selection of those experts does not return.
+
+\paragraph{Execution and identification are different.}
+Let $O_T(\theta)$ expose routing probabilities and let $O_0(\theta)=h(O_T(\theta))$ expose only their winners, with other observed quantities held fixed. The observer's version spaces satisfy
+\begin{equation}
+ \{\theta':O_T(\theta')=O_T(\theta)\}
+ \subseteq
+ \{\theta':O_0(\theta')=O_0(\theta)\}.\label{eq:coarsen}
+\end{equation}
+Thus hardening can preserve execution while a coarsened trace reveals less about the artifact. More generally, a target property $Q(\theta)$ can be inferred exactly from behavioral observations $O(\theta)$ and an artifact statistic $A(\theta)$ if and only if
+\begin{equation}
+ \kerop(O,A)\subseteq\kerop Q.\label{eq:sufficiency}
+\end{equation}
+Artifact access improves identification precisely when it separates a target-relevant observational equivalence class. Which equivalence class is separated depends on the observation channel.
+
+\section{Model queries, memory, and interventions}\label{sec:queries}
+A query $q:\C\to A$ can be certified before a unique model is identified. For nonempty $V$, return $a$ when every $c\in V$ has $q(c)=a$, and $\unknown$ otherwise. Return $\bottomans$ on $V=\varnothing$. This defines another readout in \cref{sec:inference} and therefore another canonical quotient.
+
+\begin{proposition}[Exact query certificate]\label{prop:cover}
+Fix a true model $c^*\in V$ and deterministic experiments with outcomes $D(c,e)$. Let
+\begin{equation}
+ B_q=\{c\in V:q(c)\ne q(c^*)\},\qquad
+ A_e=\{c\in B_q:D(c,e)\ne D(c^*,e)\}.
+ \label{eq:kill}
+\end{equation}
+Truthful outcomes for an experiment set $E$ certify $q(c^*)$ exactly when
+\begin{equation}
+ \bigcup_{e\in E}A_e=B_q.\label{eq:cover}
+\end{equation}
+Consequently the minimum target-relative certificate size is the minimum set-cover size; fixed nonnegative experiment costs give weighted set cover. Stored outcomes replace $B_q$ by its uncovered subset before further experiments are chosen.
+\end{proposition}
+\begin{proof}
+The query-disagreeing survivors are exactly $B_q\setminus\bigcup_{e\in E}A_e$. The true model survives, so the query is certified if and only if this set is empty.
+\end{proof}
+
+An artifact can store an experimental outcome, a structured model that entails it, or the update rule that obtains its consequence; these representations exchange information according to the distinctions they remove and the operations they preserve. Sound transfer between two representations is the reduced-product construction of abstract interpretation \citep{cousot1979}; \cref{app:reduction} gives its version-space realization.
+
+\begin{theorem}[Adaptive experiments on a pooled memory]\label{thm:policy}
+Let a policy choose each experiment and its final answer as functions of a persistent state, and let that state be the pooled outcome $\mu(s)$ of \eqref{eq:independent}. Then the inference state $\delta(\mu(s))$ depends only on the set of outcomes received, and the number of experiments that change it along any branch is at most
+\begin{equation}
+ \height(\R)-1\le\sum_{j=1}^d\bigl(\height(E_j)-1\bigr).\label{eq:policy}
+\end{equation}
+On a coupled $W$-coordinate $b$-value memory the count is at most $b^W-1$. Both bounds are attained.
+\end{theorem}
+\begin{proof}
+By \cref{thm:canonical}, $\delta(\mu(s))=[V(s)]$, and $V(s)$ is an intersection over the outcome set. Successive states form a descending chain in $\R$, whose strict steps number at most $\height(\R)-1$; \cref{thm:exchange} bounds this by the channel heights, and \eqref{eq:cardinality} bounds it by $b^W-1$. The chain constructions of \cref{cor:width}, read as policies that eliminate one boundary per experiment, attain both.
+\end{proof}
+
+Finite acyclic structural causal models give an explicit intervention instance \citep{pearl2009}. Write $x_i=f_i(x_{\mathrm{pa}(i)},u_i)$ in topological order. Each $f_i$ is a finite feedforward map, and $\doop(x_J=a_J)$ replaces the selected equations by constants. Compiling these maps and replacements gives an attention--ReLU program whose intervention answers agree with the structural equations by induction over the graph. \Cref{prop:cover} then characterizes exactly which stored or newly observed intervention outcomes determine a query in a finite model population. \Cref{app:causal} supplies the construction and a separation between observational agreement and intervention disagreement.
+
+A decoder with unrestricted memory obeys instead $B+t\log_2q\ge N\log_2q$ for tables $f:[N]\to[q]$ reconstructed from a $B$-bit target-dependent artifact and at most $t$ adaptive queries (\cref{app:tables}): stored and queried bits exchange one for one because the transcript is retained. A pooled memory retains only its state, so an experiment counts when it moves the state, and memory rungs and informative rounds are the same quantity. The bit law is the coupled case with unrestricted memory. The observation language and model grammar determine which distinctions require table memory: the AES S-box is specified by finite-field inversion and an affine transformation \citep{nist2023aes}, and that grammar, not the table, is the population.
+
+\section{Computational verification and implications}\label{sec:checks}
+Most results are formalized in Lean~4 with Mathlib. The constructions are additionally verified exhaustively on finite families. The accompanying programs use exact integer arithmetic for the transition and congruence checks, and NumPy float64 for softmax evaluations. The network artifacts are compiled from the specified grammars. \Cref{tab:checks} reports the executed checks; \cref{app:checks} defines every enumeration and its assertions.
+
+\begin{table}[t]
+\caption{Executed verification. Counts refer to enumerated mathematical objects or input cases, not independent training runs. Every assertion passed.}
+\label{tab:checks}
+\centering
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.47\linewidth}r >{\raggedright\arraybackslash}p{.30\linewidth}@{}}
+\toprule
+Construction & Cases & Verified property\\
+\midrule
+Meet-closed stores with readouts & 2,120 & Direct and iterative quotients agree\\
+Neural transition-table extraction & 72,911 & Every transition recovered exactly\\
+Commutative monoids, sizes 1--4 & 106 & Idempotent lifts; 329 chain quotients\\
+Chain structural quotients, sizes 1--7 & 127 & Exact residual minimum\\
+Compiled attention forests & 356 & All 256 Boolean maps on eight inputs realized\\
+Hard code-extraction input cases & 2,848 & Exact semantic round trip\\
+Soft code-execution input cases & 8,544 & Maximum absolute error $0$\\
+Shared-block transformer executions & 11,392 & Exact outputs and state invariants\\
+Symbol-level hardening cases & 1,080 & Exact criterion, including 210 same-symbol tie cases\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each transition artifact undergoes a hidden-unit permutation before extraction, and all 11,392 shared-block runs preserve protected coordinates and exact symbolic payloads; \cref{app:checks} defines each enumeration and its assertions.
+
+These results suggest a direct target for learning on artifacts: recover the inference quotient, its decompositions, and the maps between them. The quotient gives a representation-independent object for comparison; the exchange law distinguishes architectures with the same state cardinality; and the hardening certificate identifies transformations that preserve all future inference. In a model population, the extracted object supports questions about which observations separate models, which queries are already determined, and which additional experiments change the answer.
+
+\paragraph{Certified artifact transformations.}
+The extracted machine supports three certified operations: state compression, which merges states with the same continuation behavior; representation factorization, which chooses a structural congruence $\alpha$ and computes its minimum compatible residual through \eqref{eq:comp}; and hardening, which preserves the entire transition system through the local symbol-mass certificate. Each is invariant under relabeling of the extracted states, so artifacts are compared by the inference operations they implement and the distinctions those operations retain.
+
+\paragraph{Limitations.}
+The bounds measure persistent inference states, not parameter count or running time. Finite-state extraction has exponential worst-case cost in encoded width, and the computational study verifies compiled constructions rather than the prevalence of these representations under optimization. Intervention certificates are relative to the declared model population and experiment semantics. The inference theorems require correctness over the specified observation language; obtaining such certificates for learned continuous-state representations is the next empirical and verification problem.
+
+\paragraph{Conclusion.}
+An artifact's inference capacity is its retained distinctions together with its composition law: cardinality for a coupled store, chain height for an independent one, and the long revision budget at logarithmic width is the capacity in-context evidence draws on. Attention and feedforward computation realize both laws, finite-symbol hardening preserves their semantic state, and model extraction, representation exchange, and artifact comparison become one operational problem.
+
+\label{mainend}
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{references}
+\clearpage
+\appendix
+\crefalias{section}{appendix}
+\crefname{appendix}{appendix}{appendices}
+\Crefname{appendix}{Appendix}{Appendices}
+\input{appendix}
+\end{document}

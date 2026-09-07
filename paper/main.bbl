@@ -1,0 +1,126 @@
+\begin{thebibliography}{16}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Basu et~al.(2006)Basu, Pollack, and Roy]{basu2006}
+Saugata Basu, Richard Pollack, and Marie-Fran{\c{c}}oise Roy.
+\newblock \emph{Algorithms in Real Algebraic Geometry}.
+\newblock Springer, second edition, 2006.
+\newblock \doi{10.1007/3-540-33099-2}.
+
+\bibitem[Birkhoff(1944)]{birkhoff1944}
+Garrett Birkhoff.
+\newblock Subdirect unions in universal algebra.
+\newblock \emph{Bulletin of the American Mathematical Society}, 50:\penalty0
+  764--768, 1944.
+\newblock URL
+  \url{https://projecteuclid.org/journals/bulletin-of-the-american-mathematical-society/volume-50/issue-10/Subdirect-unions-in-universal-algebra/bams/1183506230.full}.
+
+\bibitem[Case and Smith(1983)]{casesmith1983}
+John Case and Carl Smith.
+\newblock Comparison of identification criteria for machine inductive
+  inference.
+\newblock \emph{Theoretical Computer Science}, 25\penalty0 (2):\penalty0
+  193--220, 1983.
+
+\bibitem[Cousot and Cousot(1979)]{cousot1979}
+Patrick Cousot and Radhia Cousot.
+\newblock Systematic design of program analysis frameworks.
+\newblock In \emph{Proceedings of the 6th ACM SIGACT-SIGPLAN Symposium on
+  Principles of Programming Languages}, pages 269--282, 1979.
+\newblock \doi{10.1145/567752.567778}.
+\newblock URL \url{https://cs.nyu.edu/~pcousot/COUSOTpapers/POPL79.shtml}.
+
+\bibitem[Darwiche and Marquis(2002)]{darwiche2002map}
+Adnan Darwiche and Pierre Marquis.
+\newblock A knowledge compilation map.
+\newblock \emph{Journal of Artificial Intelligence Research}, 17:\penalty0
+  229--264, 2002.
+\newblock \doi{10.1613/jair.989}.
+
+\bibitem[Gold(1967)]{gold1967}
+E.~Mark Gold.
+\newblock Language identification in the limit.
+\newblock \emph{Information and Control}, 10\penalty0 (5):\penalty0 447--474,
+  1967.
+
+\bibitem[Kechris(1995)]{kechris1995}
+Alexander~S. Kechris.
+\newblock \emph{Classical Descriptive Set Theory}, volume 156 of \emph{Graduate
+  Texts in Mathematics}.
+\newblock Springer, 1995.
+\newblock \doi{10.1007/978-1-4612-4190-4}.
+
+\bibitem[Locatello et~al.(2020)Locatello, Weissenborn, Unterthiner, Mahendran,
+  Heigold, Uszkoreit, Dosovitskiy, and Kipf]{locatello2020slot}
+Francesco Locatello, Dirk Weissenborn, Thomas Unterthiner, Aravindh Mahendran,
+  Georg Heigold, Jakob Uszkoreit, Alexey Dosovitskiy, and Thomas Kipf.
+\newblock Object-centric learning with slot attention.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~33, pages 11525--11538, 2020.
+\newblock URL \url{https://arxiv.org/abs/2006.15055}.
+
+\bibitem[Mitchell(1982)]{mitchell1982generalization}
+Tom~M. Mitchell.
+\newblock Generalization as search.
+\newblock \emph{Artificial Intelligence}, 18\penalty0 (2):\penalty0 203--226,
+  1982.
+\newblock \doi{10.1016/0004-3702(82)90040-6}.
+
+\bibitem[Moore(1956)]{moore1956}
+Edward~F. Moore.
+\newblock Gedanken-experiments on sequential machines.
+\newblock In Claude~E. Shannon and John McCarthy, editors, \emph{Automata
+  Studies}, volume~34 of \emph{Annals of Mathematics Studies}, pages 129--153.
+  Princeton University Press, 1956.
+\newblock \doi{10.1515/9781400882618-006}.
+
+\bibitem[{National Institute of Standards and Technology}(2023)]{nist2023aes}
+{National Institute of Standards and Technology}.
+\newblock Advanced encryption standard ({AES}).
+\newblock Technical Report FIPS 197, updated May 9, 2023, U.S. Department of
+  Commerce, 2023.
+
+\bibitem[Nerode(1958)]{nerode1958}
+Anil Nerode.
+\newblock Linear automaton transformations.
+\newblock \emph{Proceedings of the American Mathematical Society}, 9\penalty0
+  (4):\penalty0 541--544, 1958.
+\newblock \doi{10.1090/S0002-9939-1958-0135681-9}.
+
+\bibitem[Pearl(2009)]{pearl2009}
+Judea Pearl.
+\newblock \emph{Causality: Models, Reasoning, and Inference}.
+\newblock Cambridge University Press, second edition, 2009.
+\newblock \doi{10.1017/CBO9780511803161}.
+
+\bibitem[Weiss et~al.(2018)Weiss, Goldberg, and Yahav]{weiss2018extracting}
+Gail Weiss, Yoav Goldberg, and Eran Yahav.
+\newblock Extracting automata from recurrent neural networks using queries and
+  counterexamples.
+\newblock In \emph{Proceedings of the 35th International Conference on Machine
+  Learning}, volume~80 of \emph{Proceedings of Machine Learning Research},
+  pages 5247--5256, 2018.
+\newblock URL \url{https://proceedings.mlr.press/v80/weiss18a.html}.
+
+\bibitem[Yang et~al.(2026)Yang, Strobl, Chiang, and Angluin]{yang2026soft}
+Andy Yang, Lena Strobl, David Chiang, and Dana Angluin.
+\newblock Simulating hard attention using soft attention.
+\newblock \emph{Transactions of the Association for Computational Linguistics},
+  14:\penalty0 147--166, 2026.
+\newblock \doi{10.1162/TACL.a.597}.
+\newblock URL \url{https://aclanthology.org/2026.tacl-1.8/}.
+
+\bibitem[Zhou et~al.(2023)Zhou, Yang, Burns, Cardace, Jiang, Sokota, Kolter,
+  and Finn]{zhou2023nfn}
+Allan Zhou, Kaien Yang, Kaylee Burns, Adriano Cardace, Yiding Jiang, Samuel
+  Sokota, J.~Zico Kolter, and Chelsea Finn.
+\newblock Permutation equivariant neural functionals.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36, 2023.
+\newblock URL \url{https://arxiv.org/abs/2302.14040}.
+
+\end{thebibliography}

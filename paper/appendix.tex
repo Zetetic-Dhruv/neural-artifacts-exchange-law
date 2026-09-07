@@ -1,0 +1,324 @@
+\section{Additional algebraic results}\label{app:algebra}
+\subsection{Continuation equivalence and the minimal-state certificate}
+We record the details behind the semantic quotient. For every $U,V,H,W\in\Latt$, if $U\equiv_\rho V$, then
+\[
+ \rho((U\cap W)\cap H)=\rho(U\cap(W\cap H))
+ =\rho(V\cap(W\cap H))=\rho((V\cap W)\cap H).
+\]
+Thus $U\cap W\equiv_\rho V\cap W$. Applying this twice shows that the meet on equivalence classes is independent of both representatives. Associativity, commutativity, idempotence, and the identity class $[\C]$ descend from intersection. The readout is well-defined because the empty continuation is permitted.
+
+If a correct machine reaches the same state after $s,t$, determinism gives equal future outputs after every $u\in P^*$. Writing $H=V(u)$ proves $[V(s)]=[V(t)]$. Conversely, the quotient machine computes the target because its state after $s$ is exactly $[V(s)]$. These observations prove both the lower bound and the existence of a smallest implementation. The argument uses the full declared continuation language $P^*$; the readout need not identify individual candidates.
+
+A finite certificate for a proposed implementation consists of its reachable transition table, a map $\delta$ into $\R$, and the three equations in \eqref{eq:simulation}. Verifying the equations for every reachable state and every input symbol proves correctness for all histories by induction. With $N$ reachable states and $m$ input symbols, the transition part has $Nm$ equalities. This is an all-horizon certificate rather than a test on histories up to a chosen length.
+
+\subsection{Idempotent lifting in finite commutative monoids}\label{app:monoid}
+For completeness, let $x$ belong to a finite monoid. There exist positive integers $a,b$ with $x^a=x^{a+b}$. Hence $x^t=x^{t+b}$ for all $t\ge a$. Choose a multiple $r$ of $b$ with $r\ge a$. The exponents $r,2r$ differ by a multiple of $b$, so $x^{2r}=x^r$. Thus $x^r$ is idempotent.
+
+In a commutative monoid, the product of two idempotents is idempotent. On its idempotents, $e\le f$ if $ef=e$ defines a partial order. Reflexivity is idempotence; antisymmetry follows from commutativity; and if $ef=e$, $fg=f$, then $eg=(ef)g=e(fg)=ef=e$. The product $ef$ is the greatest lower bound of $e,f$, and the monoid identity is top.
+
+Let $\pi:S\to R$ be a surjective monoid homomorphism from a finite commutative monoid to a meet-semilattice with top. Since $\pi(x^r)=\pi(x)$ for every $r\ge1$, the idempotents of $S$ still map onto $R$. Given $r_1<\cdots<r_h$, choose idempotent preimages $e_i$ and let $z_i=e_i\cdots e_h$. Their images are $r_i$, and $z_iz_{i+1}=z_i$. This proves the chain-lifting assertion used in \cref{thm:exchange}.
+
+The chain height of a product of finite posets satisfies
+\[
+ \height\left(\prod_{j=1}^dQ_j\right)
+ \le 1+\sum_{j=1}^d(\height(Q_j)-1).
+\]
+Along a strict chain, coordinate $j$ can change strictly at most $\height(Q_j)-1$ times, and every strict step changes some coordinate. For finite posets the upper bound is attained by interleaving longest chains in the factors. Restricting to a subposet cannot increase height. These facts complete the proof for pooled implementations with arbitrary redundant states.
+
+\subsection{Subdirect representations and residual size}\label{app:congruence}
+\begin{proposition}\label{prop:congruence}
+Let $a:R\to A$ and $g:R\to G$ be meet homomorphisms on a finite meet-semilattice $R$, with kernels $\alpha,\beta$. The paired representation determines every state of $R$ if and only if $\alpha\cap\beta=\Delta_R$. If $R$ is the minimal inference state, a joint readout correct after every continuation exists if and only if this condition holds.
+\end{proposition}
+\begin{proof}
+Two states have the same pair precisely when they are equivalent in both kernels. Hence the kernel condition is equivalent to injectivity. Injection defines the decoded state and therefore a correct readout. Conversely, if distinct minimal states share a pair, they continue to share it after every meet update because both views are homomorphisms. Minimality supplies a distinguishing continuation, contradicting correctness.
+\end{proof}
+Every homomorphic image of $R$ is isomorphic to its kernel quotient. Conversely, each congruence quotient supplies a compositional view. The set in \eqref{eq:comp} is nonempty because the equality congruence is feasible. This proves that the minimum is exact, not merely a lower bound. For $\alpha'\subseteq\alpha$, every $\beta$ feasible for $\alpha$ is feasible for $\alpha'$, proving monotonicity under structural refinement.
+
+For a static residual $g:R\to G$ with no compositional requirement, injectivity of $(a,g)$ requires at least $|F|$ residual values on each structural fibre $F$. Let $m$ be the largest fibre size and inject every fibre separately into $[m]$. The resulting residual attains $m$, proving \eqref{eq:static}. It encodes a one-shot reconstruction of the state.
+
+For a chain, every equivalence relation with interval blocks is a meet congruence: if $x\sim y$, taking minimum with $z$ either preserves the pair, maps both to $z$, or produces two points between $x,y$. The interval property gives equivalence in each case. Therefore every choice of adjacent cuts defines a congruence and all chain congruences arise this way. If the structural view cuts a set $A$ of boundaries, the residual cuts must contain its complement. They require $n-|A|=n-a+1$ blocks, and no additional cuts are necessary.
+
+The Boolean coordinate law follows without requiring a normalized residual. Fix a structural fibre and choose a reaching history for each of its $2^{k-s}$ states. Correctness and \cref{thm:canonical} require distinct joint implementation states. Since their structural values agree, the residual values are pairwise distinct. This lower bound applies to any finite independently pooled residual. The complementary-coordinate projection attains it.
+
+\subsection{A presentation with many survivors but one inference state}
+Let $\C=\{c_0,c_1,\ldots,c_k\}$, let observations independently remove any of $c_1,\ldots,c_k$, and let no observation remove $c_0$. The reachable version spaces are all subsets containing $c_0$, so $|\Latt|=2^k$. First-fit selection in the displayed order always returns $c_0$, including after every continuation. Hence $|\R|=1$. This example makes the readout dependence of the lower bound explicit. Counting reachable survivor sets is sharp precisely when the continuation equivalence separates them.
+
+\section{Extraction and finite abstractions}\label{app:extraction}
+\subsection{Operational reconstruction of the meet}
+\begin{proposition}[Recovering the inference algebra]\label{prop:recovermeet}
+Let $(Q,q_0,(t_p)_{p\in P},o)$ be a finite reachable deterministic Moore machine. Suppose the transition maps commute and are idempotent:
+\[
+ t_pt_q=t_qt_p,\qquad t_p^2=t_p\quad(p,q\in P).
+\]
+The operation $r\wedge s=t_{w_s}(r)$, for an access word $w_s$ of $s$, is a meet with top $q_0$ satisfying
+\[
+ t_p(q)=q\wedge t_p(q_0),
+\]
+and any meet operation with top $q_0$ satisfying this identity equals it. Uniqueness uses reachability and the identity alone; commutativity and idempotence enter through existence. The operation can be reconstructed from the transition table. Its version-space realization on candidate set $Q$ has consistency sets $K(p)=\mathord{\downarrow}t_p(q_0)$ and survivor state $\mathord{\downarrow}q_s$ after history $s$.
+\end{proposition}
+\begin{proof}
+For a word $w$, write $t_w$ for its transition map. Commutativity and idempotence of the generators imply these properties for all $t_w$. For each state $r$, choose an access word $w_r$ with $t_{w_r}(q_0)=r$. Define $r\wedge s=t_{w_s}(r)$. If $w'_s$ is another access word for $s$, then, using an access word for $r$,
+\[
+ t_{w_s}(r)=t_{w_s}t_{w_r}(q_0)
+ =t_{w_r}(s)=t_{w_r}t_{w'_s}(q_0)=t_{w'_s}(r).
+\]
+Thus the definition is independent of the access word. It is commutative by the same calculation. The concatenation $w_sw_t$ is an access word for $s\wedge t$, which proves associativity. Idempotence follows from $t_{w_r}^2=t_{w_r}$, and the empty word gives identity $q_0$. Therefore the operation is a meet with top.
+
+Taking the one-letter access word for $t_p(q_0)$ gives the transition identity. In any other meet representation with that identity, induction on an access word forces $r\wedge s=t_{w_s}(r)$, using only reachability and the identity; this proves uniqueness. Finally,
+\[
+ \mathord{\downarrow}r\cap\mathord{\downarrow}s
+ =\mathord{\downarrow}(r\wedge s),\qquad
+ \mathord{\downarrow}q_0=Q.
+\]
+Induction on observations gives the stated survivor sets. The map $r\mapsto\mathord{\downarrow}r$ is injective, and the readout is $\rho(\mathord{\downarrow}r)=o(r)$.
+\end{proof}
+
+For a minimal machine whose output on histories is invariant to permutation and repetition, the transition maps necessarily commute and are idempotent. Indeed, applying $pq$ or $qp$ after any reaching history, followed by any continuation, gives equal outputs; minimality makes the resulting states equal. The same argument compares $pp$ with $p$. Conversely, commuting idempotent transitions imply both invariances directly. Consequently the condition in \cref{prop:recovermeet} can be tested from the extracted minimal machine, without presupposing a model population.
+
+The resulting model is operational. It identifies the distinctions implemented by the artifact under its observation interface. Connecting those states to external hypotheses, causal mechanisms, or object identities requires a semantic interpretation of the observations and readout. When such an interpretation is supplied by \eqref{eq:version}, \cref{thm:canonical} makes the correspondence unique on reachable states.
+
+\subsection{Partition refinement and certificates}
+Let $N$ be the number of reachable states. Start with equivalence of output labels and refine by
+\[
+ q\sim_{r+1}q'
+ \quad\Longleftrightarrow\quad
+ o(q)=o(q')\text{ and }t_p(q)\sim_rt_p(q')\text{ for all }p\in P.
+\]
+Induction shows that $\sim_r$ is agreement on all continuations of length at most $r$. Each strict refinement increases the number of blocks, so stabilization occurs after at most $N-1$ strict refinements. At stabilization the relation is a congruence for every transition. Induction on arbitrary continuations then proves agreement at every length. For two different blocks, the refinement history yields a finite distinguishing word. Thus a complete extraction certificate consists of the transition table, the quotient projection, and distinguishing continuations between distinct blocks.
+
+For a finite input alphabet, testing commutativity and idempotence requires finitely many state equalities. Once \cref{prop:recovermeet} applies, its access-word construction gives the meet table. Enumerating finite set partitions and testing meet compatibility enumerates every meet congruence. Evaluating \eqref{eq:comp} is therefore an exact finite procedure on an extracted artifact. These quantities are invariant under isomorphisms of the extracted machine.
+
+\subsection{Continuous-state artifacts with finite invariant regions}
+Exact extraction is not confined to one-hot activations. Let $Z\subseteq\RR^d$ be an invariant state set and let $B_1,\ldots,B_N$ be a finite partition of $Z$. Assume that each input $p$ maps every region into one region and that the readout is constant on each region:
+\begin{equation}
+ F_\theta(B_i,p)\subseteq B_{T(i,p)},\qquad
+ o_\theta(z)=o_i\quad(z\in B_i),\qquad z_0\in B_{i_0}.
+ \label{eq:regions}
+\end{equation}
+\begin{proposition}[Finite-region extraction]\label{prop:regions}
+The finite machine $(T,i_0,o)$ has exactly the same output on every history as the continuous-state artifact. If $Z$ and its state regions have rational semialgebraic descriptions, the initial state and input encodings are rational, output labels have rational encodings, and the transition and readout consist of rational affine, ReLU, and deterministically tie-broken hard-attention operations, all conditions in \eqref{eq:regions}, including coverage and disjointness, are decidable.
+\end{proposition}
+\begin{proof}
+The initial state belongs to the declared initial region. If the current state belongs to $B_i$, the inclusion in \eqref{eq:regions} puts its successor in $B_{T(i,p)}$; the readout equality then proves the simulation. Induction gives equality for every history.
+
+Affine and ReLU operations have semialgebraic graphs. A selected argmax index $j$ is described by the finite conjunction $s_j>s_i$ for $i<j$ and $s_j\ge s_i$ for $i>j$. Hence a fixed hard-attention network has a semialgebraic graph. Each inclusion or readout equality in \eqref{eq:regions} is a first-order sentence over the ordered real field with rational coefficients. Real quantifier elimination decides it \citep{basu2006}. Coverage and disjointness are sentences of the same form.
+\end{proof}
+The proposition gives a certificate checker for a supplied abstraction. The same partition-refinement procedure extracts its minimal machine. Region labels need not be the final semantic states: minimization removes redundant distinctions between regions.
+
+\section{A literal attention--ReLU compiler}\label{app:compiler}
+\subsection{Leaf maps and transition maps}
+For a map $f:[m]\to[q]$, set the $i$th column of $H_f$ to $e_{f(i)}$. Then $H_fe_i=e_{f(i)}$. A ReLU layer with identity input weights is the identity on nonnegative one-hot inputs, so a standard two-affine-layer feedforward block implements the table exactly. For a map on two finite inputs, the units $\relu(z_i+p_j-1)$ in \eqref{eq:ffntable} are zero except at the unique active pair. Their output matrix therefore gives the exact transition table. The construction uses $Nm$ hidden units and rational weights in $\{-1,0,1\}$ for its conjunction and one-hot output stages.
+
+A leaf table is an operational parameter matrix. The extractor obtains it by evaluating the leaf on every basis input, whether or not the implementation's hidden units have been permuted or reorganized. The same procedure extracts a transition table from any implementation satisfying the finite interface, not just from the displayed compiler.
+
+\subsection{Tuple formation and finite dataflow}
+To combine $r$ already computed symbols, use one fixed-mask attention head per input to retrieve its one-hot vector $v^{(1)},\ldots,v^{(r)}$ into disjoint scratch blocks. For a tuple $(i_1,\ldots,i_r)$, the hidden unit
+\begin{equation}
+ h_{i_1,\ldots,i_r}=\relu\!\left(\sum_{a=1}^r v^{(a)}_{i_a}-(r-1)\right)
+ \label{eq:tuple}
+\end{equation}
+is one exactly at the active tuple and zero elsewhere. An output matrix therefore implements any finite map of the retrieved tuple. Shared node-specific dispatch uses the unit
+$\relu(u_v+\sum_a v^{(a)}_{i_a}-r)$ instead. A topological schedule of these blocks implements every finite acyclic dataflow program. Fixed-mask reads have a single allowed key, so their outputs are identical for hard and soft attention. In particular, the tuple construction composes the forest outputs and implements parent retrieval and structural equations in \cref{app:causal}; no external tuple-encoding oracle is needed.
+
+\subsection{Hard attention gates}
+Write each routing score as
+\[
+ s_j(x)=\alpha_j^\top\phi(x)+\beta_j
+ =\langle (\phi(x),1),(\alpha_j,\beta_j)\rangle.
+\]
+The child tokens carry key $(\alpha_j,\beta_j)$ and value $e_{\dec{c_j}(x)}$. The parent query is $(\phi(x),1)$. The usual attention scale can be absorbed into the keys. With the declared deterministic tie rule, hard attention returns the value of $j^*(x)$. Multiplication by $H_g$ gives the node's value. Induction from leaves proves the semantic identity at every node.
+
+The extractor reads the effective query--key score coefficients, the wiring or mask, and the finite table induced by the feedforward block. Different factorizations into query and key matrices can give the same scores; the extracted code is determined semantically rather than by selecting one parameter factorization. Child reorderings preserve the extracted semantics when the tie convention is transported with the ordering. The equality in \eqref{eq:roundtrip} concerns the decoded code, not syntactic equality with its source.
+
+\subsection{Shared positionwise feedforward maps and residual paths}
+We give a standard masked-transformer realization of the forest dataflow. Unfold a finite directed acyclic graph into a finite forest when a node has multiple parents. Use one token for each resulting node. Embed the finite node-output alphabets into a common tagged alphabet, so every payload uses a common coordinate block. The token coordinates contain: a fixed one-hot node identifier; protected input features $(\phi(x),1)$; the node's key for its parent; a one-hot payload; and a scratch block initialized to zero. The identifiers and keys are operational inputs to shared dispatch and routing.
+
+Process nodes by height above the leaves. In a layer, the mask of each active parent exposes exactly its children. Inactive tokens attend to themselves. Shared query and key projections select the protected query and key blocks. The shared value projection reads the payload; the output projection writes into scratch. Because scratch was zero, the attention residual leaves there exactly the attended value. Protected coordinates and the old payload remain unchanged.
+
+For hard attention, scratch is one-hot. Let $u_v$ be the identifier of node $v$, and let $w_j$ be the scratch symbol coordinate. The shared hidden unit
+\[
+ h_{vj}=\relu(u_v+w_j-1)
+\]
+is active precisely for token $v$ and its selected symbol $j$. An output matrix maps it to the payload required by that node's finite map. Inactive nodes instead retain their old payload using the same conjunction construction with old-payload coordinates. The feedforward residual update subtracts the old payload and adds the desired one, and subtracts scratch to reset it to zero. Subtraction of a nonnegative coordinate is implemented by a negative output weight on its ReLU. All protected coordinates receive zero update. Thus one shared positionwise feedforward map implements every node-specific operation at that layer.
+
+A preliminary finite-map layer initializes leaf payloads from the one-hot input and initializes internal payloads to a fixed dummy symbol. Hence every payload is a valid one-hot vector from the start. Induction over heights proves that active children have already acquired the correct symbol and that completed nodes retain it. A forest of depth $D$ needs at most $D$ routing layers after this initialization, followed by the declared root readout. This construction fixes all masks, projections, residual paths, and feedforward dispatch; it introduces no unused field encoding the original program identifier.
+
+\subsection{Finite-symbol correction within the shared block}
+Correction can also be implemented in a shared single-hidden-layer feedforward block. For a token identifier $u_v\in\{0,1\}$ and scratch coordinate $w_j\in[0,1]$, define
+\begin{equation}
+ h_{vj}^{\eta}=
+ \frac{\relu(w_j+u_v-1-\eta)-\relu(w_j+u_v-2+\eta)}{1-2\eta}.
+ \label{eq:gatedround}
+\end{equation}
+If $u_v=1$, this equals $R_\eta(w_j)$. If $u_v=0$, both ReLUs vanish because $w_j\le1$. The output matrix can therefore apply the node-specific finite map to the corrected symbol. The payload and scratch overwrite construction is unchanged. Whenever \eqref{eq:exactmass} holds, the outgoing payload is exactly one-hot at each layer. This gives a literal implementation of \cref{thm:hardening}, with shared parameters across token positions.
+
+For real inputs beyond a finite input alphabet, the routing induction remains valid on any domain on which leaf maps have the stated implementation and the gate conditions hold. In the finite construction, all feature values and leaf maps are part of the specified input embedding, so every operation used in extraction is explicitly available.
+
+\section{Hardening, perturbations, and observability}\label{app:hardening}
+\subsection{Sharpness of the symbol-mass bound}
+Let the total unnormalized weight of the target symbol be $G$ and that of all other symbols be $B$. Then $\eps_{\ne y^*}=B/(G+B)$. Under the hypotheses of \cref{thm:hardening}, $G\ge m_*e^{s_*/T}$ and $B\le k_-e^{(s_*-\delta)/T}$, yielding \eqref{eq:margin}. Equality is attained when the $m_*$ good branches all have score $s_*$, all $k_-$ bad branches have score $s_*-\delta$, and no other branches are present. Solving $r/(1+r)\le\eta$ gives $r\le\eta/(1-\eta)$ and the unique-winner temperature bound \eqref{eq:temperature}.
+
+The local criterion in \eqref{eq:exactmass} is necessary and sufficient for correction to the selected one-hot symbol. A later finite map can collapse several symbols and thereby permit further equivalences; the criterion is applied before that map. It already accounts for branch equivalence at the symbol level. In particular, if every branch returns the same symbol, $\eps_{\ne y^*}=0$ for all temperatures, regardless of routing ties.
+
+\subsection{A perturbation certificate}
+\begin{corollary}[Numerical robustness of correction]\label{cor:robust}
+Let the ideal attention mixture have wrong-symbol mass at most $\eta-\xi$ for some $\xi>0$. If its numerical realization differs coordinatewise by at most $\xi$, then applying $R_\eta$ still returns the exact selected one-hot symbol.
+\end{corollary}
+\begin{proof}
+The selected coordinate is at least $1-\eta+\xi$ before perturbation and at least $1-\eta$ afterward. Every other coordinate is at most $\eta-\xi$ before perturbation and at most $\eta$ afterward. The correction function is constant on these two regions.
+\end{proof}
+If each score is perturbed by at most $\zeta$ and a unique winning score has gap $\delta>2\zeta$, the winner is unchanged and the perturbed gap is at least $\delta-2\zeta$. Substituting this gap into \eqref{eq:margin}, followed by \cref{cor:robust}, gives a score-and-value perturbation certificate. The same-symbol version permits route changes within a group whose values coincide; it suffices to preserve a positive gap from that group's largest score to every different-symbol branch.
+
+\subsection{Approximate hardening without symbolic correction}
+For bounded expert values $\norm{v_j}\le B$ and a unique winning score with gap $\delta$, put $r=(k-1)e^{-\delta/T}$. Directly,
+\begin{equation}
+ \left\|\sum_jp_j(T)v_j-v_{j^*}\right\|
+ \le 2B\frac{r}{1+r}\le 2B(k-1)e^{-\delta/T}.
+ \label{eq:approxhard}
+\end{equation}
+For compositions $F_L^T\circ\cdots\circ F_1^T$ and $F_L^0\circ\cdots\circ F_1^0$, assume that a common region contains all compared trajectories, each $F_\ell^T$ is $L_\ell$-Lipschitz there, and $\sup_z\norm{F_\ell^T(z)-F_\ell^0(z)}\le\eps_\ell(T)$. Inserting and subtracting $F_\ell^T(z_{\ell-1}^0)$ yields
+\[
+ e_\ell\le L_\ell e_{\ell-1}+\eps_\ell(T),\qquad
+ e_L\le\sum_{\ell=1}^L\eps_\ell(T)\prod_{j=\ell+1}^LL_j.
+\]
+Uniform score separation is imposed on the region where the local hard/soft bound is used. Alternatively, a stepwise perturbation argument certifies preservation of each gate's winning symbol. These hypotheses expose the dependence of approximate hardening on downstream stability; exact symbolic correction removes that accumulation by restoring a codebook element after each gate.
+
+Let $\widehat L_T(\theta)$ and $\widehat L_0(\theta)$ be empirical losses on a fixed sample. If $|\widehat L_T(\theta)-\widehat L_0(\theta)|\le\eps$ for every $\theta$ in a declared parameter set, then their approximate-fit sets obey
+\[
+ \{\theta:\widehat L_T(\theta)\le a-\eps\}
+ \subseteq\{\theta:\widehat L_0(\theta)\le a\}
+ \subseteq\{\theta:\widehat L_T(\theta)\le a+\eps\}.
+\]
+This follows by adding the uniform loss discrepancy. Under exact symbolic preservation and a loss on the resulting symbols, the two sets are equal for every threshold.
+
+\subsection{Artifact observations and their sufficiency}
+For maps $O:\Theta\to\mathcal O$, $A:\Theta\to\mathcal A$, and $Q:\Theta\to\mathcal Q$, an exact inference function on the image of $(O,A)$ exists if and only if $Q$ is constant on its fibres. Necessity follows by applying the inference function to equal observation pairs. For sufficiency, assign to each pair in the image the common value of $Q$ on its fibre. This defines a function with the required factorization and proves \eqref{eq:sufficiency}.
+
+If $O_0=h\circ O_T$, equality of $O_T$ implies equality of $O_0$, proving \eqref{eq:coarsen}. This is an observational comparison, with a declared coarsening map. It does not equate the activations of independently run soft and hard networks when their upstream states change. \Cref{thm:hardening} supplies the separate execution-equivalence theorem for the compiled symbolic interfaces.
+
+\section{Sound exchange between representations}\label{app:reduction}
+Let $\mathcal A,\mathcal G\subseteq\powerset(\C)$ be families containing $\C$ and closed under arbitrary intersections. Since $\C$ is finite, it suffices to require closure under finite intersections. Define
+\[
+ \cl_{\mathcal A}(V)=\bigcap\{A\in\mathcal A:V\subseteq A\},\qquad
+ \cl_{\mathcal G}(V)=\bigcap\{G\in\mathcal G:V\subseteq G\}.
+\]
+A structural state $A$ and residual state $G$ jointly denote $A\cap G$. Their reduced product \citep{cousot1979} is
+\[
+ \operatorname{red}(A,G)=
+ \bigl(\cl_{\mathcal A}(A\cap G),\cl_{\mathcal G}(A\cap G)\bigr).
+\]
+\begin{proposition}
+Reduction is componentwise contracting, preserves the joint version space exactly, and is idempotent.
+\end{proposition}
+\begin{proof}
+Write $V=A\cap G$, $A'=\cl_{\mathcal A}(V)$, and $G'=\cl_{\mathcal G}(V)$. Since $A$ and $G$ are available overapproximations, $V\subseteq A'\subseteq A$ and $V\subseteq G'\subseteq G$. Hence $V\subseteq A'\cap G'\subseteq A\cap G=V$. Repeating reduction uses the same $V$ and therefore produces the same pair.
+\end{proof}
+The representation in one component can sharpen the other by making consequences of their joint information expressible there. No additional external observation is needed for this transfer. The joint set of possible models is unchanged, so the operation preserves evidence.
+
+\section{Model queries and causal interpretation}\label{app:causal}
+\subsection{Query certificates and adaptive experiments}
+Fix $c^*\in V$. After truthful outcomes on $E$, the survivor set is
+\[
+ V_E=\{c\in V:D(c,e)=D(c^*,e)\text{ for all }e\in E\}.
+\]
+The true candidate belongs to this set. Intersecting with $B_q$ gives $B_q\setminus\bigcup_{e\in E}A_e$, proving \cref{prop:cover}. For a stored experiment set $E_0$, an additional set $E_1$ certifies the query exactly when its kill sets cover $B_q\setminus\bigcup_{e\in E_0}A_e$. Model identification is the special case $q(c)=c$, or a semantic equivalence class of $c$ when extensional duplicates are identified.
+
+The result is target-relative. A policy choosing experiments before learning which model is true is represented by a decision tree whose branches are outcomes. Every root-to-leaf path must satisfy the same covering condition for each true model reaching that leaf. Thus the proposition characterizes the certificates required at policy leaves; optimizing the entire adaptive policy additionally chooses how those certificates share prefixes.
+
+\subsection{Compiling a finite acyclic structural causal model}
+Let the endogenous variables $X_1,\ldots,X_d$ and exogenous variable $U$ have finite alphabets. For each model $c$, let its graph be acyclic, with structural maps
+\[
+ X_i=f_{c,i}(X_{\mathrm{pa}_c(i)},U).
+\]
+For a fixed intervention $I=\doop(X_J=a_J)$ and exogenous input $u$, evaluate the variables in a topological order, using the constant $a_i$ for $i\in J$ and the structural table otherwise. Each operation is a finite map. Retrieve its already evaluated parent symbols and the exogenous symbol with fixed-mask attention heads. The conjunction units in \eqref{eq:tuple} form the tuple basis vector, and the table matrix applies its structural map. An intervention-controlled finite map selects the constant branch or the structural branch. The forest compiler realizes these operations by attention and ReLU maps.
+
+\begin{proposition}[Intervention preservation]\label{prop:scm}
+For every model $c$, intervention $I$, and exogenous input $u$, the compiled program returns the unique solution of the intervened structural equations. For a specified finite exogenous distribution, weighted aggregation gives the exact intervention distribution.
+\end{proposition}
+\begin{proof}
+At the first variable in a topological order, the program applies either its intervention constant or the structural map with exogenous input $u$. This agrees with the intervened equation. Suppose the program is correct for all preceding variables. Every parent of the next variable precedes it, so the retrieved tuple is correct; applying its selected table proves the next value correct. Induction gives the unique solution. Summing its one-hot output distribution against the specified exogenous probabilities gives the exact interventional law.
+\end{proof}
+To apply the deterministic certificate theorem, an experiment can report a controlled-exogenous outcome or the exact observable distribution under an intervention. The output of such an experiment is a deterministic function of the candidate model. Observations from a stochastic experiment require their own statistical consistency map; the survivor and continuation constructions then use that declared map.
+
+For an explicit separation, let $U$ be uniform on $\{0,1\}$ and consider
+\[
+ c_1:\ X=U,\ Y=X,\qquad c_2:\ X=U,\ Y=U.
+\]
+Both give the same observational distribution: probability $1/2$ each on $(0,0)$ and $(1,1)$. Under $\doop(X=0)$, the first model has $Y=0$ surely, while the second retains uniform $Y$. The query $\Pr(Y=1\mid\doop(X=0))$ is therefore $0$ or $1/2$. Observational distribution access does not separate the pair, while that intervention distribution does. Their structural tables, or a compiled program with the same intervention semantics, also separate the query by \eqref{eq:sufficiency}.
+
+\section{Population memory bounds and routed model classes}\label{app:tables}
+\begin{proposition}[Table reconstruction]
+Suppose a fixed deterministic decoder reconstructs every function $f:[N]\to[q]$ from a target-dependent $B$-bit artifact and at most $t$ adaptive table queries. Then
+\[
+ B+t\log_2q\ge N\log_2q.
+\]
+For a population of all permutations of $[N]$, with $0\le t\le N$, the corresponding bound is
+\[
+ B\ge\log_2((N-t)!).
+\]
+\end{proposition}
+\begin{proof}
+Fix the artifact. Its adaptive query tree has at most $q^t$ leaves after padding shorter transcripts to depth $t$. The artifact and answer transcript determine all queries and the reconstructed table. Two different tables cannot have the same pair, since the decoder is exact. There are at most $2^Bq^t$ pairs and $q^N$ tables, giving the first inequality.
+
+For permutations, repeated queries supply no new information and can be omitted. Pad to $t$ distinct queries. The possible answer counts at successive levels are at most $N,N-1,\ldots,N-t+1$, independent of how query locations are chosen. There are at most $N!/(N-t)!$ leaves for each artifact. Comparing the $2^B N!/(N-t)!$ pairs with the $N!$ targets proves the second inequality.
+\end{proof}
+All target-dependent information, including a varying architecture, routing parameters, learned encoders, and finite tables, belongs in the $B$-bit description. The bound concerns a population with a fixed decoder, not the shortest program of a particular function. A restricted algebraic population can have a shorter description. This is why a structured S-box implementation and an arbitrary permutation table belong to different counting problems.
+
+\subsection{Selection and execution have different statistical complexity}
+Let $\mathcal F$ consist of routed functions $f(x)=h_{r(x)}(x)$, with routing class $\mathcal H_{\mathrm{route}}$ and expert classes $\mathcal H_i$, all with finite output alphabets. For a finite sample $S$, let $S_i(r)$ be the sample positions routed to expert $i$. Then
+\begin{equation}
+ \bigl|\mathcal F\!\restriction_S\bigr|
+ \le\sum_{r\in\mathcal H_{\mathrm{route}}\restriction_S}
+          \prod_i\bigl|\mathcal H_i\!\restriction_{S_i(r)}\bigr|.
+ \label{eq:localgrowth}
+\end{equation}
+For each realized routing pattern, the output restriction is determined by the expert restrictions on their assigned positions. Multiplying counts bounds that pattern; summing over patterns gives \eqref{eq:localgrowth}. Fixed experts contribute factors of one. When expert contents also vary, their restrictions contribute explicitly. Thus an economical selection representation does not erase the variability of the models it executes.
+
+\section{Hardening and measurability}\label{app:measurability}
+Discontinuity of argmax is not, by itself, a failure of measurable inference. A deterministic finite argmax of measurable scores is measurable: each selected-index event is a finite conjunction of measurable comparisons, with strict comparisons for earlier indices to implement the tie rule. Finite compositions with measurable feedforward maps remain measurable.
+
+\begin{proposition}[Finite parameter families]
+For a finite parameter set $\Theta$ and measurable losses $\ell_\theta(z)$ with defined finite expectations $L(\theta)$, the uniform-deviation event
+\[
+ \left\{(z_1,\ldots,z_m):
+ \max_{\theta\in\Theta}\left|L(\theta)-\frac1m\sum_{i=1}^m\ell_\theta(z_i)\right|>\eps\right\}
+\]
+is measurable. This holds for both soft and deterministically tie-broken hard attention whenever their individual losses are measurable.
+\end{proposition}
+\begin{proof}
+Each empirical loss is measurable in the sample. The maximum is finite, so its threshold event is a finite union of measurable events.
+\end{proof}
+
+A second statement applies to real-valued parameters. Fix a finite architecture of affine, ReLU, and hard-attention operations, a semialgebraic parameter set $\Theta\subseteq\RR^p$, and a semialgebraic loss. If the reference distribution has finite support, then the population loss is semialgebraic in the parameters. The graph of the network is semialgebraic by the same argmax description used in \cref{prop:regions}. The joint strict-deviation set in parameter and sample variables is therefore semialgebraic. Its projection to sample variables is semialgebraic by the Tarski--Seidenberg theorem, hence Borel \citep{basu2006}.
+
+For general parameter spaces and joint families, projection raises a separate descriptive-set-theoretic issue: projections of Borel sets need not be Borel \citep{kechris1995}. The relevant object is the parameter-uniform event, not an individual network evaluation. The preservation and observation-coarsening results in \cref{sec:hardening} identify how hardening changes computation and identifiability without identifying either change with a loss of measurability.
+
+\section{Reproducibility and executed checks}\label{app:checks}
+Most results are formalized in Lean~4 with Mathlib. The accompanying implementation consists of four Python modules and a machine-readable result file. Running
+\begin{verbatim}
+python checks/verify.py
+\end{verbatim}
+regenerates every reported count. The recorded environment is Python 3.13.5 with NumPy 2.3.5. Integer checks use exact integer arithmetic. Float64 is used for dot products and softmax evaluation in the finite attention constructions. No fitted parameters, external datasets, or randomized train/test splits enter the enumerations.
+
+\paragraph{Inference quotients.}
+For candidate sizes $k=1,2,3$, enumerate every family of bit masks containing the full mask and closed under bitwise intersection. There are 70 such labeled families in total. For each family, enumerate every Boolean readout and add the first-surviving-index readout, with a separate inconsistency output. This gives 2,120 cases. Direct equivalence by all meets is compared against iterative transition refinement; readout descent and meet compatibility are also checked.
+
+\paragraph{Congruences and exact residual minima.}
+Enumerate every set partition of each chain of size one through seven, retaining exactly those compatible with minimum. There are $2^{n-1}$ at size $n$ and 127 structural quotients across the range. For each, search all residual congruences for the smallest jointly injective representation. The result is $n-a+1$ in every case. Repeat for Boolean stores on one through three coordinates and every initial coordinate projection; the minima are $2^{k-s}$. The four-chain parity residual is explicitly checked to be injective jointly with the structural view but incompatible with minimum.
+
+\paragraph{Non-idempotent pooling.}
+Enumerate every commutative multiplication table with identity labeled zero on carriers of sizes one through four, and retain the associative tables. The counts are $1,2,9,94$, totaling 106 labeled monoids; 93 are non-idempotent. For every element, a factorial power is checked to be idempotent. Enumerate every surjective homomorphism from each monoid to a chain of size no larger than its carrier. All 329 maps are checked to remain surjective on idempotents and satisfy the height bound. These are labeled tables, not isomorphism classes.
+
+\paragraph{Neural machine extraction.}
+Compile each of the 2,120 inference machines by \eqref{eq:ffntable}. Apply a hidden-unit permutation using seed 20260907, transporting both adjacent weight matrices. Extract the transition and readout tables from the resulting network and minimize them. All 72,911 state--input evaluations reproduce the specified transition, and every extracted quotient equals the direct continuation equivalence.
+
+\paragraph{Attention forests.}
+The input set is $\{0,\ldots,7\}$. The four base maps are constant zero, constant one, parity, and complemented parity. Enumerate all one-gate combinations of these maps over thresholds $1.5,3.5,5.5$, with either the identity or complemented output map. This gives 96 one-gate codes, in addition to four leaves. Finally enumerate all $4^4=256$ base-map assignments to the four leaves of a balanced depth-two tree whose thresholds are $1.5,3.5,5.5$. The total is 356 network artifacts, realizing all 256 Boolean functions on eight inputs.
+
+Routing scores at threshold $t$ are $t-x$ and $x-t$. Their minimum gap on the integer input set is one. The feedforward correction uses $\eta=1/4$ and then applies the chosen finite map. Extracted routing coefficients, leaf tables, and output maps reproduce the code on all 2,848 network--input pairs. Softmax execution at temperatures $0.1$, $0.25$, and $0.5$ gives 8,544 further pairs. The maximum recorded absolute error from the target one-hot output is zero in float64. These equalities check the compiled finite-symbol construction; the mathematical guarantee is \cref{thm:hardening}.
+
+\paragraph{Literal shared-block execution.}
+Compile the same 356 forests into token matrices with protected node identifiers, input features, parent keys, payloads, and scratch blocks. Execute the actual shared query/key/value/output projections, masked attention, and shared ReLU feedforward matrices with both residual paths. For each artifact and each of the eight inputs, run hard attention and temperatures $0.1$, $0.25$, and $0.5$. All 11,392 runs return the target symbol with zero maximum recorded absolute error. After every layer, protected coordinates are unchanged, payloads are one-hot, and scratch is zero; the largest recorded error in these invariants is also zero. The forward evaluator receives only matrices, masks, and the input, not the source program.
+
+\paragraph{Same-symbol ties and coupled minimum.}
+Enumerate every three-branch score vector in $\{-1,0,1\}^3$, every binary assignment of branch values, and temperatures $0.1,0.25,0.5,1,2$. The 1,080 cases verify the necessary-and-sufficient wrong-symbol-mass criterion; 210 involve tied maximum-score branches with identical symbols. Separately, allocate chain cuts for sizes two through 32 and alphabet sizes two through eight, giving 217 sharp independent-width constructions. The coupled digit-code attention minimum is verified for chain sizes two through 64 and alphabets $2,3,4,8$, covering 357,756 input pairs.
