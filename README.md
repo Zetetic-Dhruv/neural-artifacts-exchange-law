@@ -28,3 +28,28 @@ lake build
 
 Toolchain: Lean 4.31.0; Mathlib pinned in `lakefile.toml`. The development uses no
 axioms beyond `propext`, `Classical.choice`, and `Quot.sound`, and no incomplete proofs.
+
+## The certified-compiler chain (branch `exchange-law`)
+
+`lean/NeuralArtifacts/CertifiedChain/` bridges three developments that were proved
+separately: the cascade fiber (trace agreement, on which a routed network collapses to a
+single affine map), the presentation lattice (admissible words, the read axis, darkness and
+its cure), and the extraction theory in this repository.
+
+| module | content |
+|---|---|
+| `TraceWord` | a cascade trace is a labeled word; prefix agreement is darkness at the trace presentation |
+| `FiberPartition` | the affine collapse at general carrier dimension; successor determinacy and readout constancy discharge the finite-abstraction template, giving agreement on all histories |
+| `TraceExtraction` | the reachable version space of trace atoms is the fiber they cut, so the minimal machine at the trace presentation is the canonical inference state |
+| `TraceCapacity` | trace count as a dimension, bounded by depth with the carrier dimension absent |
+| `HardeningRead` | hardening is a proper presentation restriction on the read axis; the wrong-mass, perturbation and score-margin criteria each imply it creates no darkness between separated states |
+| `Repair` | where hardening collapses a distinction, the cure is exhibited: a threshold word at the differing coordinate |
+
+98 declarations, no incomplete proofs, axioms within `propext`, `Classical.choice` and
+`Quot.sound`. No metric, Lipschitz constant or covering number enters the routing line.
+
+These modules import the presentation lattice and the cascade development, which live in a
+larger library and are not vendored here, so they are **not** part of this repository's build
+targets and `lake build` ignores them. They compile inside that library, where all three
+build with zero errors and zero warnings. The 30 modules on `main` remain self-contained and
+build on their own.
